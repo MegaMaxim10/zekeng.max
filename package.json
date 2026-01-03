@@ -1,0 +1,27 @@
+{
+  "name": "zekeng-maxime-online",
+  "version": "1.0.0",
+  "description": "My portfolio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "validate:content": "node scripts/validate-content.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MegaMaxim10/zekeng-maxime-online.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/MegaMaxim10/zekeng-maxime-online/issues"
+  },
+  "homepage": "https://github.com/MegaMaxim10/zekeng-maxime-online#readme",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "glob": "^13.0.0"
+  }
+}

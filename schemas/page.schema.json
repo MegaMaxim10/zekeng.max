@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/page.schema.json",
+  "title": "Portfolio Page Schema",
+  "type": "object",
+  "required": ["meta", "body"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "header": { "$ref": "#/$defs/header" },
+    "body": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/block" }
+    },
+    "footer": { "$ref": "#/$defs/footer" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "required": ["id", "title", "language"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9\\-]+$"
+        },
+        "title": { "type": "string" },
+        "language": {
+          "type": "string",
+          "enum": ["en"]
+        },
+        "version": { "type": "string" },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "private"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "header": {
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "lead": { "type": "string" },
+        "image": {
+          "type": "object",
+          "required": ["src"],
+          "properties": {
+            "src": { "type": "string" },
+            "alt": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "blockBase": {
+      "type": "object",
+      "required": ["type", "data"],
+      "properties": {
+        "type": { "type": "string" },
+        "id": { "type": "string" },
+        "style": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "paragraphBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "paragraph" },
+            "data": {
+              "type": "object",
+              "required": ["text"],
+              "properties": {
+                "text": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "headingBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "heading" },
+            "data": {
+              "type": "object",
+              "required": ["level", "text"],
+              "properties": {
+                "level": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                },
+                "text": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "listBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "list" },
+            "data": {
+              "type": "object",
+              "required": ["items"],
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string" }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "timelineBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "timeline" },
+            "data": {
+              "type": "object",
+              "required": ["items"],
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["period", "title"],
+                    "properties": {
+                      "period": { "type": "string" },
+                      "title": { "type": "string" },
+                      "description": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "linkBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "link" },
+            "data": {
+              "type": "object",
+              "required": ["label", "url"],
+              "properties": {
+                "label": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "external": { "type": "boolean" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "cardGridBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "card-grid" },
+            "data": {
+              "type": "object",
+              "required": ["cards"],
+              "properties": {
+                "cards": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["title"],
+                    "properties": {
+                      "title": { "type": "string" },
+                      "description": { "type": "string" },
+                      "image": { "type": "string" },
+                      "link": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "assetBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "asset" },
+            "data": {
+              "type": "object",
+              "required": ["kind", "src"],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["pdf", "image", "zip", "external"]
+                },
+                "label": { "type": "string" },
+                "src": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "formBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "form" },
+            "data": {
+              "type": "object",
+              "required": ["provider", "endpoint", "fields"],
+              "properties": {
+                "provider": { "type": "string" },
+                "endpoint": { "type": "string", "format": "uri" },
+                "fields": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["name", "label"],
+                    "properties": {
+                      "name": { "type": "string" },
+                      "label": { "type": "string" },
+                      "type": {
+                        "type": "string",
+                        "enum": ["text", "email", "textarea"]
+                      },
+                      "required": { "type": "boolean" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "block": {
+      "oneOf": [
+        { "$ref": "#/$defs/paragraphBlock" },
+        { "$ref": "#/$defs/headingBlock" },
+        { "$ref": "#/$defs/listBlock" },
+        { "$ref": "#/$defs/timelineBlock" },
+        { "$ref": "#/$defs/linkBlock" },
+        { "$ref": "#/$defs/cardGridBlock" },
+        { "$ref": "#/$defs/assetBlock" },
+        { "$ref": "#/$defs/formBlock" }
+      ]
+    },
+    "footer": {
+      "type": "object",
+      "properties": {
+        "notes": { "type": "string" },
+        "related": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

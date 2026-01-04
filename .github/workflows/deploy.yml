@@ -35,6 +35,9 @@ jobs:
       - name: Validate JSON content
         run: npm run validate:content
 
+      - name: Running tests
+        run: npm run test
+
       - name: Build static site
         run: npm run build
         env:

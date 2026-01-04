@@ -4,9 +4,11 @@
   "description": "My portfolio",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "validate:content": "node scripts/validate-content.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "validate-test-and-build": "npm run validate:content && npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "clean-css": "^5.3.3",
     "html-minifier-terser": "^7.2.0",
-    "terser": "^5.44.1"
+    "terser": "^5.44.1",
+    "vitest": "^4.0.16"
   }
 }

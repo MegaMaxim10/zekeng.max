@@ -249,12 +249,25 @@ async function fetchPeerReviews(orcidId) {
       for (const prGroup of prGroups) {
         const summaries = prGroup["peer-review-summary"] || [];
         for (const summary of summaries) {
+          const subjectName = summary["subject-name"]?.title?.value
+            || summary["subject-name"]?.value
+            || summary["subject-name"]
+            || "";
+          const reviewJournal = summary["subject-container-name"]?.value
+            || summary["subject-container-name"]
+            || summary["review-group-id"]
+            || "";
+
           reviews.push({
             type: summary["type"] || "peer-review",
             role: summary["reviewer-role"],
             completionDate: summary["completion-date"],
             reviewType: summary["review-type"],
             reviewUrl: summary["review-url"]?.value,
+            subjectName,
+            reviewJournal,
+            subjectType: summary["subject-type"],
+            subjectUrl: summary["subject-url"]?.value,
             organization: summary["convening-organization"]?.name || "Unknown",
             groupId: group["group-id"]
           });

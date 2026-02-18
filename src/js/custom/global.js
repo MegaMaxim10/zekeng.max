@@ -49,6 +49,59 @@
   }
 
   const currentPath = normalizePath(window.location.pathname);
+  const body = document.body;
+
+  function applyPassionTheme(path) {
+    if (!body) return;
+
+    const themeClasses = [
+      "theme-science",
+      "theme-teaching",
+      "theme-music",
+      "theme-football"
+    ];
+    body.classList.remove(...themeClasses);
+
+    const nextClasses = [];
+    if (path === "/") {
+      nextClasses.push(...themeClasses);
+    }
+    if (path.startsWith("/3-research")) {
+      nextClasses.push("theme-science");
+    }
+    if (path.startsWith("/2-teaching")) {
+      nextClasses.push("theme-teaching");
+    }
+    if (path.includes("/5-other-activities/2-singing")) {
+      nextClasses.push("theme-music");
+    }
+    if (path.includes("football") || path.includes("sport")) {
+      nextClasses.push("theme-football");
+    }
+
+    if (nextClasses.length > 0) {
+      body.classList.add(...nextClasses);
+    }
+  }
+
+  function mountPassionDecor() {
+    if (!body || body.querySelector(".passion-atmosphere")) return;
+
+    const decor = document.createElement("div");
+    decor.className = "passion-atmosphere";
+    decor.setAttribute("aria-hidden", "true");
+    decor.innerHTML = `
+      <span class="passion-motif motif-science"></span>
+      <span class="passion-motif motif-teaching"></span>
+      <span class="passion-motif motif-music"></span>
+      <span class="passion-motif motif-football"></span>
+    `;
+
+    body.prepend(decor);
+  }
+
+  applyPassionTheme(currentPath);
+  mountPassionDecor();
 
   document.querySelectorAll(".site-nav a, .breadcrumb-nav a").forEach((link) => {
     const href = link.getAttribute("href");

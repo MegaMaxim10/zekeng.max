@@ -62,6 +62,15 @@ function getWorkTypeLabel(workType) {
   return typeMap[workType?.toLowerCase()] || "Work";
 }
 
+function formatLabel(value, fallback = "") {
+  if (!value) return fallback;
+  return String(value)
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
+}
+
 function formatContributorList(contributors = []) {
   const authorNames = contributors
     .filter((c) => c?.name)
@@ -450,13 +459,43 @@ function renderPeerReviewsSection(reviews) {
   return `<div class="orcid-peer-reviews">
     ${reviews.map(review => `
       <article class="peer-review">
-        <div class="review-meta">
+        <header class="review-header">
+          <div class="review-heading">
+            <h3 class="review-title">${escapeHtml(formatLabel(review.reviewType, "Review"))}</h3>
+            <p class="review-org">${escapeHtml(review.organization || "Unknown organization")}</p>
+          </div>
           <span class="review-date">${formatDate(review.completionDate) || "Date not specified"}</span>
-          <span class="review-org">${escapeHtml(review.organization)}</span>
+        </header>
+        <div class="review-badges">
+          <span class="review-badge">${escapeHtml(formatLabel(review.role, "Reviewer"))}</span>
+          <span class="review-badge">${escapeHtml(formatLabel(review.type, "Peer review"))}</span>
         </div>
-        <p class="review-role">${escapeHtml(review.role || "Reviewer")}</p>
-        <p class="review-type">${escapeHtml(review.reviewType || "Review")}</p>
-        ${review.reviewUrl ? `<a href="${escapeHtml(review.reviewUrl)}" target="_blank" rel="noopener noreferrer" class="review-link">View Review</a>` : ""}
+        <dl class="review-detail-grid">
+          ${review.subjectName ? `
+            <div class="review-detail-item">
+              <dt>Subject</dt>
+              <dd>${escapeHtml(review.subjectName)}</dd>
+            </div>` : ""}
+          ${review.subjectType ? `
+            <div class="review-detail-item">
+              <dt>Subject Type</dt>
+              <dd>${escapeHtml(formatLabel(review.subjectType))}</dd>
+            </div>` : ""}
+          ${review.groupId ? `
+            <div class="review-detail-item">
+              <dt>Group ID</dt>
+              <dd>${escapeHtml(String(review.groupId))}</dd>
+            </div>` : ""}
+          ${review.reviewJournal ? `
+            <div class="review-detail-item">
+              <dt>Journal</dt>
+              <dd>${escapeHtml(String(review.reviewJournal))}</dd>
+            </div>` : ""}
+        </dl>
+        <div class="review-links">
+          ${review.subjectUrl ? `<a href="${escapeHtml(review.subjectUrl)}" target="_blank" rel="noopener noreferrer" class="review-link">View Subject</a>` : ""}
+          ${review.reviewUrl ? `<a href="${escapeHtml(review.reviewUrl)}" target="_blank" rel="noopener noreferrer" class="review-link">View Review Record</a>` : ""}
+        </div>
       </article>
     `).join("")}
   </div>`;

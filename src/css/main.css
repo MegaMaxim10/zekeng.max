@@ -107,6 +107,266 @@ body {
     transition: background var(--transition), color var(--transition);
 }
 
+.site-header,
+.main,
+.related-pages,
+.site-footer {
+    position: relative;
+    z-index: 1;
+}
+
+.passion-atmosphere {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.passion-motif {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    filter: saturate(1.05);
+}
+
+.motif-science {
+    top: 9%;
+    right: clamp(0.8rem, 5vw, 3.8rem);
+    width: clamp(130px, 15vw, 190px);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    border: 2px solid color-mix(in oklab, var(--accent-primary) 45%, transparent);
+    background:
+        radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--accent-secondary) 34%, transparent) 0 8%, transparent 10%),
+        radial-gradient(circle at 22% 30%, color-mix(in oklab, var(--accent-primary) 24%, transparent) 0 7%, transparent 9%),
+        radial-gradient(circle at 78% 67%, color-mix(in oklab, var(--accent-primary) 24%, transparent) 0 7%, transparent 9%),
+        conic-gradient(
+            from 0deg,
+            color-mix(in oklab, var(--accent-primary) 18%, transparent) 0 14%,
+            transparent 14% 36%,
+            color-mix(in oklab, var(--accent-secondary) 15%, transparent) 36% 48%,
+            transparent 48% 72%,
+            color-mix(in oklab, var(--accent-primary) 18%, transparent) 72% 84%,
+            transparent 84% 100%
+        );
+    box-shadow: 0 0 0 12px color-mix(in oklab, var(--accent-primary) 8%, transparent);
+    animation: science-precess 13s linear infinite;
+}
+
+.motif-science::before,
+.motif-science::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.motif-science::before {
+    border-radius: 999px;
+    border: 2px dashed color-mix(in oklab, var(--accent-secondary) 38%, transparent);
+    transform: scale(1.14);
+    animation: science-precess 9s linear infinite reverse;
+}
+
+.motif-science::after {
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 50% -6%, color-mix(in oklab, var(--accent-secondary) 44%, transparent) 0 7px, transparent 8px),
+        radial-gradient(circle at -5% 54%, color-mix(in oklab, var(--accent-primary) 40%, transparent) 0 6px, transparent 7px),
+        radial-gradient(circle at 106% 52%, color-mix(in oklab, var(--accent-primary) 40%, transparent) 0 6px, transparent 7px);
+    animation: science-drift 6s ease-in-out infinite;
+}
+
+.motif-teaching {
+    top: 42%;
+    left: clamp(0.4rem, 3vw, 1.9rem);
+    width: clamp(135px, 16vw, 208px);
+    height: clamp(95px, 12vw, 145px);
+    border-radius: 0.8rem;
+    border: 2px solid color-mix(in oklab, var(--accent-secondary) 40%, transparent);
+    background:
+        linear-gradient(180deg, color-mix(in oklab, var(--accent-primary) 16%, transparent), transparent 38%),
+        repeating-linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--accent-secondary) 16%, transparent) 0 2px,
+            transparent 2px 16px
+        ),
+        linear-gradient(0deg, color-mix(in oklab, var(--accent-primary) 12%, transparent), transparent 30%);
+    box-shadow: 0 8px 24px color-mix(in oklab, var(--accent-primary) 12%, transparent);
+    animation: teaching-float 7.2s ease-in-out infinite;
+}
+
+.motif-teaching::before,
+.motif-teaching::after {
+    content: "";
+    position: absolute;
+}
+
+.motif-teaching::before {
+    inset: 11% 9%;
+    border-radius: 0.55rem;
+    border: 2px solid color-mix(in oklab, var(--accent-primary) 34%, transparent);
+    background:
+        linear-gradient(90deg, transparent 0 58%, color-mix(in oklab, var(--accent-secondary) 28%, transparent) 58% 60%, transparent 60% 100%),
+        linear-gradient(180deg, transparent 0 18%, color-mix(in oklab, var(--accent-primary) 36%, transparent) 18% 21%, transparent 21% 42%, color-mix(in oklab, var(--accent-secondary) 34%, transparent) 42% 45%, transparent 45% 100%);
+}
+
+.motif-teaching::after {
+    width: 44px;
+    height: 6px;
+    border-radius: 999px;
+    right: 10px;
+    bottom: -12px;
+    background: color-mix(in oklab, var(--accent-primary) 52%, transparent);
+    transform-origin: right center;
+    animation: teaching-pointer 3.4s ease-in-out infinite;
+}
+
+.motif-music {
+    right: clamp(0.25rem, 2vw, 1.2rem);
+    bottom: 18%;
+    width: clamp(145px, 19vw, 224px);
+    height: clamp(86px, 10.5vw, 128px);
+    border-radius: 1rem;
+    border: 2px solid color-mix(in oklab, var(--accent-primary) 38%, transparent);
+    background:
+        repeating-linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--accent-secondary) 20%, transparent) 0 7px,
+            transparent 7px 14px
+        ),
+        linear-gradient(180deg, color-mix(in oklab, var(--accent-primary) 20%, transparent), transparent 56%);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent-secondary) 24%, transparent);
+    animation: music-groove 6.8s ease-in-out infinite;
+}
+
+.motif-music::before,
+.motif-music::after {
+    content: "";
+    position: absolute;
+}
+
+.motif-music::before {
+    width: 42px;
+    height: 42px;
+    left: 18px;
+    bottom: 14px;
+    border-radius: 999px;
+    border: 3px solid color-mix(in oklab, var(--accent-primary) 56%, transparent);
+    border-top-color: transparent;
+    border-right-color: color-mix(in oklab, var(--accent-secondary) 66%, transparent);
+    animation: music-rotate 5.5s linear infinite;
+}
+
+.motif-music::after {
+    inset: 20% 12% auto;
+    height: 3px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--accent-primary) 62%, transparent);
+    box-shadow:
+        0 17px 0 color-mix(in oklab, var(--accent-secondary) 48%, transparent),
+        0 34px 0 color-mix(in oklab, var(--accent-primary) 44%, transparent);
+    transform-origin: left center;
+    animation: music-wave 3.2s ease-in-out infinite;
+}
+
+.motif-football {
+    left: clamp(4.2rem, 10vw, 11.5rem);
+    bottom: 7%;
+    width: clamp(130px, 16vw, 190px);
+    height: clamp(76px, 9vw, 108px);
+    border-radius: 0.8rem;
+    border: 2px solid color-mix(in oklab, var(--accent-primary) 48%, transparent);
+    background:
+        radial-gradient(circle at 50% 50%, transparent 0 12px, color-mix(in oklab, var(--accent-secondary) 36%, transparent) 12px 14px, transparent 14px),
+        linear-gradient(90deg, transparent 0 49%, color-mix(in oklab, var(--accent-primary) 42%, transparent) 49% 51%, transparent 51% 100%),
+        linear-gradient(180deg, color-mix(in oklab, var(--accent-secondary) 14%, transparent), transparent 65%);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent-secondary) 20%, transparent);
+    animation: football-pan 8s ease-in-out infinite;
+}
+
+.motif-football::before,
+.motif-football::after {
+    content: "";
+    position: absolute;
+}
+
+.motif-football::before {
+    width: 18px;
+    height: 18px;
+    top: 42%;
+    left: 10%;
+    border-radius: 999px;
+    border: 2px solid color-mix(in oklab, var(--accent-primary) 56%, transparent);
+    background:
+        radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--accent-primary) 38%, transparent) 0 35%, transparent 37%),
+        radial-gradient(circle at 30% 36%, color-mix(in oklab, var(--accent-secondary) 46%, transparent) 0 22%, transparent 24%);
+    animation: football-roll 4.5s ease-in-out infinite;
+}
+
+.motif-football::after {
+    width: 64%;
+    height: 7px;
+    left: 18%;
+    bottom: -14px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--text-secondary) 22%, transparent);
+    filter: blur(1px);
+}
+
+body.theme-science .motif-science,
+body.theme-teaching .motif-teaching,
+body.theme-music .motif-music,
+body.theme-football .motif-football {
+    opacity: 0.36;
+}
+
+@keyframes science-precess {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes science-drift {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(8deg) scale(1.02); }
+}
+
+@keyframes teaching-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes teaching-pointer {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-24deg); }
+}
+
+@keyframes music-groove {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes music-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes music-wave {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(2px) rotate(-1deg); }
+}
+
+@keyframes football-pan {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes football-roll {
+    0% { left: 10%; transform: translateY(0) rotate(0deg); }
+    45% { left: 72%; transform: translateY(-9px) rotate(150deg); }
+    100% { left: 10%; transform: translateY(0) rotate(360deg); }
+}
+
 img {
     max-width: 100%;
     height: auto;
@@ -867,6 +1127,31 @@ textarea:focus-visible {
 }
 
 @media (max-width: 680px) {
+    .passion-motif {
+        opacity: 0.22 !important;
+        transform: scale(0.8);
+    }
+
+    .motif-science {
+        top: 13%;
+        right: -2rem;
+    }
+
+    .motif-teaching {
+        left: -2.2rem;
+        top: 48%;
+    }
+
+    .motif-music {
+        right: -3rem;
+        bottom: 22%;
+    }
+
+    .motif-football {
+        left: 0.6rem;
+        bottom: 10%;
+    }
+
     .site-footer-inner {
         flex-direction: column;
     }

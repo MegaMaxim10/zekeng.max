@@ -242,6 +242,49 @@ describe("renderOrcid", () => {
     expect(html).toContain("Senior Researcher");
   });
 
+  it("renders peer review cards with expanded metadata", () => {
+    const block = {
+      type: "orcid",
+      data: {
+        orcidId: "0000-0002-0417-5591",
+        sections: ["peer-review"],
+        cachedData: {
+          sections: {
+            peerReviews: [
+              {
+                type: "peer-review",
+                role: "editor",
+                reviewType: "review",
+                completionDate: {
+                  year: { value: "2024" },
+                  month: { value: "11" },
+                  day: { value: "02" }
+                },
+                organization: "Nature",
+                groupId: "PR-42",
+                reviewJournal: "Nature Machine Intelligence",
+                subjectName: "Robust ML Study",
+                subjectType: "journal-article",
+                subjectUrl: "https://example.org/subject/42",
+                reviewUrl: "https://example.org/review/42"
+              }
+            ]
+          }
+        }
+      }
+    };
+
+    const html = renderOrcid(block);
+    expect(html).toContain("Peer Reviews");
+    expect(html).toContain("View Review Record");
+    expect(html).toContain("View Subject");
+    expect(html).toContain("Group ID");
+    expect(html).toContain("PR-42");
+    expect(html).toContain("Journal");
+    expect(html).toContain("Nature Machine Intelligence");
+    expect(html).toContain("Robust ML Study");
+  });
+
   it("renders empty state for missing sections", () => {
     const block = {
       type: "orcid",

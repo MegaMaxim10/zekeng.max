@@ -15,6 +15,7 @@ import path from "node:path";
 import { globSync } from "glob";
 
 import { renderPage, siteData } from "../src/js/renderer.js";
+import { preprocessPage } from "../src/js/block-processors.js";
 import { minifyDirectory } from "./minify.js";
 
 import { buildSiteGraph, outputPathFor } from "./site-graph.js";
@@ -65,7 +66,10 @@ const navigationHtml = generateNavigation(siteGraph, BASE_PATH);
 
 const lastModified = new Date().toISOString().split("T")[0];
 
-pages.forEach(page => {
+for (const page of pages) {
+  // Preprocess blocks (e.g., fetch external data for async-capable blocks)
+  await preprocessPage(page);
+
   // Render content
   const renderedContent = renderPage(page.json);
 
@@ -100,7 +104,7 @@ pages.forEach(page => {
   fs.writeFileSync(outPath, finalHtml);
 
   console.log(`✔ Generated ${outPath}`);
-});
+}
 
 console.log("✔ Copying static assets…");
 

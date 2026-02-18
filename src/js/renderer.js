@@ -9,6 +9,7 @@ import { renderCardGrid } from "./components/card-grid.js";
 import { renderAsset } from "./components/asset.js";
 import { renderForm } from "./components/form.js";
 import { renderHtmlContent } from "./components/html-content.js";
+import { renderOrcid } from "./components/orcid.js";
 
 export function renderPage(page) {
     let html = "";
@@ -52,6 +53,8 @@ function renderBlock(block) {
       return renderForm(block);
     case "html-content":
       return renderHtmlContent(block);
+    case "orcid":
+      return renderOrcid(block);
     default:
       throw new Error(`Unsupported block type: ${block.type}`);
   }

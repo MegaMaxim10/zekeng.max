@@ -36,6 +36,28 @@
           }
         ]
       }
+    },
+    {
+      "type": "heading",
+      "data": { "level": 2, "text": "Education & Qualifications" }
+    },
+    {
+      "type": "orcid",
+      "data": {
+        "orcidId": "0000-0002-0417-5591",
+        "sections": ["education"]
+      }
+    },
+    {
+      "type": "heading",
+      "data": { "level": 2, "text": "Employment History" }
+    },
+    {
+      "type": "orcid",
+      "data": {
+        "orcidId": "0000-0002-0417-5591",
+        "sections": ["employment"]
+      }
     }
   ]
 }

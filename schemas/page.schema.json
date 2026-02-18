@@ -313,6 +313,58 @@
         }
       ]
     },
+    "orcidBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "orcid" },
+            "data": {
+              "type": "object",
+              "required": ["orcidId"],
+              "properties": {
+                "orcidId": { "type": "string" },
+                "sections": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["works", "education", "employment", "peer-review", "grants", "professional-activity"]
+                  }
+                },
+                "filters": {
+                  "type": "object",
+                  "properties": {
+                    "workType": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "sortBy": { "type": "string" },
+                    "limit": { "type": "integer", "minimum": 1 }
+                  },
+                  "additionalProperties": false
+                },
+                "displayOptions": {
+                  "type": "object",
+                  "properties": {
+                    "showTitle": { "type": "boolean" },
+                    "showAbstract": { "type": "boolean" },
+                    "showDetails": {
+                      "type": "string",
+                      "enum": ["minimal", "summary", "full"]
+                    },
+                    "dateFormat": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                },
+                "cachedData": { "type": "object" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
     "block": {
       "oneOf": [
         { "$ref": "#/$defs/paragraphBlock" },
@@ -323,7 +375,8 @@
         { "$ref": "#/$defs/cardGridBlock" },
         { "$ref": "#/$defs/assetBlock" },
         { "$ref": "#/$defs/formBlock" },
-        { "$ref": "#/$defs/htmlContentBlock" }
+        { "$ref": "#/$defs/htmlContentBlock" },
+        { "$ref": "#/$defs/orcidBlock" }
       ]
     },
     "footer": {

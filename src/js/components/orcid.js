@@ -23,13 +23,27 @@ function getDoiLink(externalIds) {
 
   for (const id of externalIds.externalIdentifier) {
     if (id.externalIdentifierType?.toLowerCase() === "doi") {
+      const rawDoi = (id.externalIdentifierId?.value || "").trim();
+      const normalizedDoi = rawDoi.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
       return {
-        doi: id.externalIdentifierId?.value,
-        url: `https://doi.org/${id.externalIdentifierId?.value}`
+        doi: normalizedDoi || rawDoi,
+        url: `https://doi.org/${normalizedDoi || rawDoi}`
       };
     }
   }
   return null;
+}
+
+function getExternalIdentifierList(externalIds) {
+  if (!externalIds?.externalIdentifier) return [];
+
+  return externalIds.externalIdentifier
+    .map((id) => ({
+      type: (id.externalIdentifierType || "ID").toUpperCase(),
+      value: id.externalIdentifierId?.value || "",
+      url: id.externalIdentifierUrl?.value || ""
+    }))
+    .filter((id) => id.value);
 }
 
 /**
@@ -48,66 +62,284 @@ function getWorkTypeLabel(workType) {
   return typeMap[workType?.toLowerCase()] || "Work";
 }
 
+function formatContributorList(contributors = []) {
+  const authorNames = contributors
+    .filter((c) => c?.name)
+    .sort((a, b) => {
+      const aSeq = a.sequence === "first" ? 0 : 1;
+      const bSeq = b.sequence === "first" ? 0 : 1;
+      return aSeq - bSeq;
+    })
+    .map((c) => c.name.trim());
+  return authorNames;
+}
+
+function splitName(fullName) {
+  if (!fullName) return { given: [], family: "" };
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return { given: [], family: "" };
+  if (parts.length === 1) return { given: [], family: parts[0] };
+  const family = parts.pop();
+  return { given: parts, family };
+}
+
+function toVancouverName(fullName) {
+  const { given, family } = splitName(fullName);
+  if (!family) return "";
+  const initials = given.map((name) => name[0].toUpperCase()).join("");
+  return `${family} ${initials}`.trim();
+}
+
+function toIeeeName(fullName) {
+  const { given, family } = splitName(fullName);
+  if (!family) return "";
+  const initials = given.map((name) => `${name[0].toUpperCase()}.`).join(" ");
+  return `${initials}${initials ? " " : ""}${family}`.trim();
+}
+
+function formatAuthorSeries(authors) {
+  if (authors.length === 0) return "";
+  if (authors.length === 1) return authors[0];
+  if (authors.length === 2) return `${authors[0]} and ${authors[1]}`;
+  return `${authors.slice(0, -1).join(", ")}, and ${authors[authors.length - 1]}`;
+}
+
+function buildGeneratedVancouverCitation(work, doiLink, citationIndex) {
+  const authors = formatAuthorSeries(
+    formatContributorList(work.contributors).map(toVancouverName).filter(Boolean)
+  );
+  const title = work.title || "Untitled work";
+  const journal = work.journalTitle || "";
+  const year = work.publicationDate?.year?.value || "n.d.";
+  const volume = work.volume || "";
+  const issue = work.issue || "";
+  const pages = work.pages || "";
+  const referenceIndex = citationIndex ? `${citationIndex}. ` : "";
+
+  let journalSegment = journal ? `${journal}. ` : "";
+  if (volume) {
+    journalSegment += `${year};${volume}`;
+    if (issue) {
+      journalSegment += `(${issue})`;
+    }
+    if (pages) {
+      journalSegment += `:${pages}`;
+    }
+    journalSegment += ".";
+  } else if (year !== "n.d.") {
+    journalSegment += `${year}.`;
+  }
+
+  return [
+    referenceIndex,
+    authors ? `${authors}. ` : "",
+    `${title}. `,
+    journalSegment,
+    doiLink ? ` doi:${doiLink.doi}` : ""
+  ].join("").trim();
+}
+
+function buildGeneratedIeeeCitation(work, doiLink, citationIndex) {
+  const authors = formatAuthorSeries(
+    formatContributorList(work.contributors).map(toIeeeName).filter(Boolean)
+  );
+  const title = work.title || "Untitled work";
+  const journal = work.journalTitle || "";
+  const year = work.publicationDate?.year?.value || "n.d.";
+  const volume = work.volume || "";
+  const issue = work.issue || "";
+  const pages = work.pages || "";
+  const referenceIndex = citationIndex ? `[${citationIndex}] ` : "";
+
+  const segments = [];
+  if (journal) segments.push(journal);
+  if (volume) segments.push(`vol. ${volume}`);
+  if (issue) segments.push(`no. ${issue}`);
+  if (pages) segments.push(`pp. ${pages}`);
+  if (year !== "n.d.") segments.push(year);
+  if (doiLink) segments.push(`doi: ${doiLink.doi}`);
+
+  return [
+    referenceIndex,
+    authors ? `${authors}, ` : "",
+    `"${title},"`,
+    segments.length > 0 ? ` ${segments.join(", ")}.` : ""
+  ].join("").trim();
+}
+
+function getCitationStyle(displayOptions = {}) {
+  const style = (displayOptions.citationStyle || "vancouver").toLowerCase();
+  return style === "ieee" ? "ieee" : "vancouver";
+}
+
+function resolveWorkDisplayOptions(displayOptions = {}) {
+  const defaults = {
+    type: true,
+    publicationDate: true,
+    journalBadge: true,
+    authors: true,
+    journal: true,
+    volume: true,
+    issue: true,
+    number: true,
+    pages: true,
+    description: true,
+    identifiers: true,
+    providedCitation: true,
+    generatedCitation: true
+  };
+  const resolved = { ...defaults };
+  const metadataConfig = displayOptions.workMetadata || {};
+
+  for (const key of Object.keys(defaults)) {
+    if (typeof metadataConfig[key] === "boolean") {
+      resolved[key] = metadataConfig[key];
+    }
+  }
+
+  const visibleList = Array.isArray(displayOptions.visibleWorkMetadata)
+    ? displayOptions.visibleWorkMetadata
+    : null;
+
+  if (visibleList && visibleList.length > 0) {
+    for (const key of Object.keys(resolved)) {
+      resolved[key] = false;
+    }
+    for (const key of visibleList) {
+      if (Object.prototype.hasOwnProperty.call(resolved, key)) {
+        resolved[key] = true;
+      }
+    }
+  }
+
+  return resolved;
+}
+
+function getCitation(work) {
+  if (typeof work.citation === "string") {
+    return { type: "plain-text", text: work.citation };
+  }
+
+  if (work.citation && typeof work.citation === "object") {
+    return {
+      type: work.citation["citation-type"] || work.citation.citationType || "",
+      text: work.citation["citation-value"] || work.citation.citationValue || ""
+    };
+  }
+
+  return {
+    type: work.citationType || "",
+    text: work.citationText || ""
+  };
+}
+
 /**
  * Render a single work/publication
  */
-function renderWork(work) {
+function renderWork(work, options = {}) {
   const doi = getDoiLink(work.externalIds);
+  const externalIdentifiers = getExternalIdentifierList(work.externalIds)
+    .filter((id) => id.type !== "DOI");
+  const citationStyle = getCitationStyle(options.displayOptions);
+  const metadata = resolveWorkDisplayOptions(options.displayOptions);
+  const citation = getCitation(work);
   const year = work.publicationDate?.year?.value || "N/A";
   const month = work.publicationDate?.month?.value;
   const day = work.publicationDate?.day?.value;
+  const authors = formatContributorList(work.contributors);
+  const generatedCitation = citationStyle === "ieee"
+    ? buildGeneratedIeeeCitation(work, doi, options.citationIndex)
+    : buildGeneratedVancouverCitation(work, doi, options.citationIndex);
   
-  // Format full publication date
   let pubDate = year;
   if (month) {
-    const monthName = new Date(2000, parseInt(month) - 1).toLocaleString('en', { month: 'long' });
+    const monthName = new Date(2000, parseInt(month, 10) - 1).toLocaleString("en", { month: "long" });
     pubDate = `${monthName} ${year}`;
     if (day) {
       pubDate = `${day} ${monthName} ${year}`;
     }
   }
 
-  // Build contributor list
   let contributorsList = "";
-  if (work.contributors && work.contributors.length > 0) {
-    const authors = work.contributors
-      .filter(c => c.name)
-      .map(c => escapeHtml(c.name))
-      .join(", ");
-    if (authors) {
-      contributorsList = `<div class="work-contributors">
-        <strong>Authors:</strong> <span class="author-list">${authors}</span>
+  if (metadata.authors && authors.length > 0) {
+    contributorsList = `<div class="work-contributors">
+        <strong>Authors:</strong> <span class="author-list">${escapeHtml(authors.join(", "))}</span>
       </div>`;
+  }
+
+  const detailItems = [
+    ["Journal", metadata.journal ? work.journalTitle : ""],
+    ["Volume", metadata.volume ? work.volume : ""],
+    ["Issue", metadata.issue ? work.issue : ""],
+    ["Number", metadata.number ? work.number : ""],
+    ["Pages", metadata.pages ? work.pages : ""]
+  ].filter(([, value]) => Boolean(value));
+
+  let detailsSection = "";
+  if (detailItems.length > 0) {
+    detailsSection = `<dl class="work-detail-grid">
+      ${detailItems
+        .map(([label, value]) => `
+        <div class="work-detail-item">
+          <dt>${escapeHtml(label)}</dt>
+          <dd>${escapeHtml(String(value))}</dd>
+        </div>
+      `)
+        .join("")}
+    </dl>`;
+  }
+
+  let citationSection = "";
+  const showProvidedCitation = metadata.providedCitation && Boolean(citation.text);
+  const showGeneratedCitation = metadata.generatedCitation && Boolean(generatedCitation);
+  if (showProvidedCitation || showGeneratedCitation) {
+    citationSection = `<div class="work-citations">
+      ${showProvidedCitation ? `
+      <div class="work-citation">
+        <strong>Provided Citation${citation.type ? ` (${escapeHtml(citation.type.toUpperCase())})` : ""}</strong>
+        <p class="citation-text">${escapeHtml(citation.text)}</p>
+      </div>` : ""}
+      ${showGeneratedCitation ? `
+      <div class="work-citation">
+        <strong>${citationStyle.toUpperCase()} (generated)</strong>
+        <p class="citation-text">${escapeHtml(generatedCitation)}</p>
+      </div>` : ""}
+    </div>`;
+  }
+
+  const identifierItems = [];
+  if (doi) {
+    identifierItems.push(`<span class="identifier doi">DOI: <a href="${escapeHtml(doi.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(doi.doi)}</a></span>`);
+  }
+  for (const id of externalIdentifiers) {
+    const value = escapeHtml(id.value);
+    const label = escapeHtml(id.type);
+    if (id.url) {
+      identifierItems.push(`<span class="identifier">${label}: <a href="${escapeHtml(id.url)}" target="_blank" rel="noopener noreferrer">${value}</a></span>`);
+    } else {
+      identifierItems.push(`<span class="identifier">${label}: ${value}</span>`);
     }
   }
 
-  // Build citation section
-  let citationSection = "";
-  if (work.citation) {
-    citationSection = `<div class="work-citation">
-      <strong>Citation:</strong>
-      <p class="citation-text">${escapeHtml(work.citation)}</p>
-    </div>`;
-  }
+  const metadataBadges = [
+    metadata.type ? `<span class="work-type">${getWorkTypeLabel(work.type)}</span>` : "",
+    metadata.publicationDate ? `<span class="work-date">${escapeHtml(pubDate)}</span>` : "",
+    metadata.journalBadge && work.journalTitle ? `<span class="work-journal">${escapeHtml(work.journalTitle)}</span>` : ""
+  ].filter(Boolean);
 
   return `
     <article class="orcid-work">
       <h4 class="work-title">${escapeHtml(work.title)}</h4>
       ${work.subtitle ? `<p class="work-subtitle">${escapeHtml(work.subtitle)}</p>` : ""}
       
-      <div class="work-metadata">
-        <span class="work-type">${getWorkTypeLabel(work.type)}</span>
-        <span class="work-date">${escapeHtml(pubDate)}</span>
-        ${work.journalTitle ? `<span class="work-journal">${escapeHtml(work.journalTitle)}</span>` : ""}
-      </div>
+      ${metadataBadges.length > 0 ? `<div class="work-metadata">${metadataBadges.join("")}</div>` : ""}
       
       ${contributorsList}
+      ${detailsSection}
       
-      ${work.description ? `<p class="work-description">${escapeHtml(work.description)}</p>` : ""}
+      ${metadata.description && work.description ? `<p class="work-description">${escapeHtml(work.description)}</p>` : ""}
       
-      <div class="work-identifiers">
-        ${doi ? `<span class="identifier doi">DOI: <a href="${escapeHtml(doi.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(doi.doi)}</a></span>` : ""}
-      </div>
+      ${metadata.identifiers && identifierItems.length > 0 ? `<div class="work-identifiers">${identifierItems.join("")}</div>` : ""}
       
       ${citationSection}
       
@@ -121,7 +353,7 @@ function renderWork(work) {
 /**
  * Render works/publications section
  */
-function renderWorksSection(works) {
+function renderWorksSection(works, displayOptions = {}) {
   if (!works || works.length === 0) {
     return "<p class=\"no-data\">No publications available.</p>";
   }
@@ -137,11 +369,16 @@ function renderWorksSection(works) {
   }
 
   let html = '<div class="orcid-works">';
+  let citationIndex = 1;
   for (const [type, typeWorks] of Object.entries(groupedByType)) {
     html += `<section class="work-group work-type-${type}">
       <h3>${getWorkTypeLabel(type)}</h3>
       <div class="work-list">
-        ${typeWorks.map(renderWork).join("")}
+        ${typeWorks.map((work) => {
+          const rendered = renderWork(work, { displayOptions, citationIndex });
+          citationIndex += 1;
+          return rendered;
+        }).join("")}
       </div>
     </section>`;
   }
@@ -161,7 +398,7 @@ function renderEducationSection(educations) {
   const items = educations.map(edu => {
     const startDate = formatDate(edu.startDate);
     const endDate = edu.endDate ? formatDate(edu.endDate) : "Present";
-    const period = startDate && endDate ? `${startDate} – ${endDate}` : "Dates not specified";
+    const period = startDate && endDate ? `${startDate} - ${endDate}` : "Dates not specified";
 
     return {
       period,
@@ -187,7 +424,7 @@ function renderEmploymentSection(employments) {
   const items = employments.map(emp => {
     const startDate = formatDate(emp.startDate);
     const endDate = emp.endDate ? formatDate(emp.endDate) : "Present";
-    const period = startDate && endDate ? `${startDate} – ${endDate}` : "Dates not specified";
+    const period = startDate && endDate ? `${startDate} - ${endDate}` : "Dates not specified";
 
     return {
       period,
@@ -236,7 +473,7 @@ function renderGrantsSection(grants) {
   const items = grants.map(grant => {
     const startDate = formatDate(grant.startDate);
     const endDate = grant.endDate ? formatDate(grant.endDate) : "Present";
-    const period = startDate && endDate ? `${startDate} – ${endDate}` : "Dates not specified";
+    const period = startDate && endDate ? `${startDate} - ${endDate}` : "Dates not specified";
 
     return {
       period,
@@ -260,7 +497,7 @@ function renderProfessionalActivitiesSection(activities) {
   const items = activities.map(activity => {
     const startDate = formatDate(activity.startDate);
     const endDate = activity.endDate ? formatDate(activity.endDate) : "Present";
-    const period = startDate && endDate ? `${startDate} – ${endDate}` : "Dates not specified";
+    const period = startDate && endDate ? `${startDate} - ${endDate}` : "Dates not specified";
 
     return {
       period,
@@ -285,17 +522,16 @@ function renderTimeline(data) {
   const items = data.items.map(item => {
     return `
       <div class="timeline-item">
-        <div class="timeline-marker"></div>
+        <div class="timeline-period">${escapeHtml(item.period)}</div>
         <div class="timeline-content">
-          <p class="timeline-period">${escapeHtml(item.period)}</p>
-          <h4 class="timeline-title">${escapeHtml(item.title)}</h4>
+          <strong class="timeline-title">${escapeHtml(item.title)}</strong>
           ${item.description ? `<div class="timeline-description">${item.description}</div>` : ""}
         </div>
       </div>
     `;
   }).join("");
 
-  return `<div class="timeline">${items}</div>`;
+  return `<div class="timeline block-timeline">${items}</div>`;
 }
 
 /**
@@ -340,7 +576,7 @@ export function renderOrcid(block) {
           html += `
             <div class="orcid-section works-section">
               <h2>Publications</h2>
-              ${renderWorksSection(orcidSections.works)}
+              ${renderWorksSection(orcidSections.works, displayOptions)}
             </div>
           `;
         }

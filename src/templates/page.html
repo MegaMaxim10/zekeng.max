@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{{basePath}}/assets/css/components.css" />
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
 <header class="site-header">
   <div class="nav-container">
@@ -16,14 +17,19 @@
       <a href="{{basePath}}/">{{siteTitle}}</a>
     </div>
 
-    <button class="nav-toggle" aria-label="Open menu">☰</button>
+    <button
+      class="nav-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="main-navigation"
+    >Menu</button>
 
-    <nav class="site-nav">
+    <nav id="main-navigation" class="site-nav" aria-label="Main navigation">
       {{navigation}}
     </nav>
 
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-      🌙
+      Theme
     </button>
   </div>
 
@@ -32,15 +38,17 @@
   </div>
 </header>
 
-<section class="main">
+<section id="main-content" class="main">
   {{content}}
 </section>
 
 {{relatedPages}}
 
 <footer class="site-footer">
-  <p>© {{year}} {{siteTitle}}</p>
-  <p>Last updated: {{lastModified}}</p>
+  <div class="site-footer-inner">
+    <p>&copy; {{year}} {{siteTitle}}</p>
+    <p>Last updated: {{lastModified}}</p>
+  </div>
 </footer>
 
 <script type="text/javascript" src="{{basePath}}/assets/js/custom/global.js"></script>

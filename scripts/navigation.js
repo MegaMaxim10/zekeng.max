@@ -9,8 +9,8 @@ export function generateNavigation(siteGraph, basePath = "") {
   const { byDir, contentDir } = siteGraph;
   const root = byDir[contentDir].main;
 
-  let html = `<ul>`;
-  html += `<li><a href="${urlFor(root, siteGraph, basePath)}">Home</a></li>`;
+  let html = `<ul class="menu menu-root">`;
+  html += `<li class="menu-item"><a class="menu-link" href="${urlFor(root, siteGraph, basePath)}">Home</a></li>`;
 
   Object.keys(byDir)
     .filter(dir => dir !== contentDir && path.dirname(dir) === contentDir)
@@ -19,8 +19,8 @@ export function generateNavigation(siteGraph, basePath = "") {
       const main = byDir[dir].main;
       const title = main.json.meta?.title || main.json.header?.title;
 
-      html += `<li>`;
-      html += `<a href="${urlFor(main, siteGraph, basePath)}">${title}</a>`;
+      html += `<li class="menu-item${(main.json.meta?.genSubMenus === false) ? "" : " has-submenu"}">`;
+      html += `<a class="menu-link" href="${urlFor(main, siteGraph, basePath)}">${title}</a>`;
 
       if (
         main.json.meta?.genSubMenus === undefined ||
@@ -31,14 +31,14 @@ export function generateNavigation(siteGraph, basePath = "") {
           .sort(compareAlphabetically);
 
         if (children.length) {
-          html += `<ul>`;
+          html += `<ul class="submenu">`;
           children.forEach(cd => {
             const childMain = byDir[cd].main;
             const ct =
               childMain.json.meta?.title ||
               childMain.json.header?.title;
 
-            html += `<li><a href="${urlFor(childMain, siteGraph, basePath)}">${ct}</a></li>`;
+            html += `<li class="submenu-item"><a class="submenu-link" href="${urlFor(childMain, siteGraph, basePath)}">${ct}</a></li>`;
           });
           html += `</ul>`;
         }
@@ -57,7 +57,11 @@ export function generateBreadcrumb(page, siteGraph, basePath = "") {
     .split(/[\\/]/)
     .filter(Boolean);
 
-  let html = `<a href="${basePath}/">Home</a>`;
+  const crumbs = [{
+    label: "Home",
+    href: `${basePath}/`
+  }];
+
   let acc = siteGraph.contentDir;
   
   parts.forEach(part => {
@@ -68,11 +72,24 @@ export function generateBreadcrumb(page, siteGraph, basePath = "") {
         main.json.meta?.title ||
         main.json.header?.title;
 
-      html += ` &raquo; <a href="${urlFor(main, siteGraph, basePath)}">${title}</a>`;
+      crumbs.push({
+        label: title,
+        href: urlFor(main, siteGraph, basePath)
+      });
     }
   });
 
-  return html;
+  const items = crumbs
+    .map((crumb, index) => {
+      const isActive = index === crumbs.length - 1;
+      if (isActive) {
+        return `<li class="breadcrumb-item active" aria-current="page"><span>${crumb.label}</span></li>`;
+      }
+      return `<li class="breadcrumb-item"><a class="breadcrumb-link" href="${crumb.href}">${crumb.label}</a></li>`;
+    })
+    .join("");
+
+  return `<nav class="breadcrumb-nav" aria-label="Breadcrumb"><ol class="breadcrumb-list">${items}</ol></nav>`;
 }
 
 export function generateRelatedPages(page, siteGraph, basePath = "") {
@@ -87,14 +104,16 @@ export function generateRelatedPages(page, siteGraph, basePath = "") {
   const links = related
     .map(p => {
       const title = p.json.meta?.title || p.json.header?.title;
-      return `<li><a href="${urlFor(p, siteGraph, basePath)}">${title}</a></li>`;
+      return `<li class="related-pages-item"><a class="related-pages-link" href="${urlFor(p, siteGraph, basePath)}">${title}</a></li>`;
     })
     .join("");
 
   return `
     <section class="related-pages">
-      <h2>Related Pages</h2>
-      <ul>${links}</ul>
+      <div class="related-pages-inner">
+        <h2>Related Pages</h2>
+        <ul>${links}</ul>
+      </div>
     </section>
   `;
 }

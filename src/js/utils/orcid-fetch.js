@@ -100,6 +100,13 @@ async function fetchWorkDetails(orcidId, putCode) {
       return null;
     }
 
+    const citationValue = typeof data.citation === "string"
+      ? data.citation
+      : data.citation?.["citation-value"] || data.citation?.citationValue;
+    const citationType = typeof data.citation === "string"
+      ? "plain-text"
+      : data.citation?.["citation-type"] || data.citation?.citationType;
+
     return {
       putCode: data["put-code"],
       title: data.title?.title?.value || "Untitled",
@@ -107,8 +114,13 @@ async function fetchWorkDetails(orcidId, putCode) {
       type: data.type || "other",
       publicationDate: data["publication-date"],
       journalTitle: data["journal-title"]?.value,
+      volume: data["journal-volume"]?.value || data.volume?.value || data.volume,
+      issue: data["journal-issue"]?.value || data.issue?.value || data.issue,
+      number: data.number?.value || data.number,
+      pages: data["page-range"] || data.pages?.value || data.pages,
       description: data["short-description"] || data.description,
-      citation: data.citation,
+      citationType,
+      citationText: citationValue,
       contributors: data.contributors?.contributor?.map(c => ({
         name: c["credit-name"]?.value,
         role: c["contributor-attributes"]?.["contributor-role"],

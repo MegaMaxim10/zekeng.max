@@ -1,6 +1,7 @@
-import { escapeHtml } from "../utils/render-utils.js";
+import { escapeHtml, renderStyles } from "../utils/render-utils.js";
 
 export function renderForm(block) {
+  const classes = ["contact-form", "block-form", renderStyles(block)].filter(Boolean).join(" ");
   const fields = block.data.fields.map(field => `
     <label>
       ${escapeHtml(field.label)}
@@ -9,7 +10,7 @@ export function renderForm(block) {
   `).join("");
 
   return `
-    <form class="contact-form"
+    <form class="${classes}"
           method="POST"
           action="${block.data.endpoint}">
       ${fields}

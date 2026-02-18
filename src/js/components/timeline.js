@@ -1,6 +1,7 @@
 import { escapeHtml, renderStyles } from "../utils/render-utils.js";
 
 export function renderTimeline(block) {
+  const classes = ["timeline", "block-timeline", renderStyles(block)].filter(Boolean).join(" ");
   const items = block.data.items.map(item => `
     <div class="timeline-item">
       <div class="timeline-period">${escapeHtml(item.period)}</div>
@@ -12,7 +13,7 @@ export function renderTimeline(block) {
   `).join("");
 
   return `
-    <section class="timeline ${renderStyles(block)}">
+    <section class="${classes}">
       ${items}
     </section>
   `;

@@ -353,7 +353,51 @@
                       "type": "string",
                       "enum": ["minimal", "summary", "full"]
                     },
-                    "dateFormat": { "type": "string" }
+                    "dateFormat": { "type": "string" },
+                    "citationStyle": {
+                      "type": "string",
+                      "enum": ["vancouver", "ieee"]
+                    },
+                    "visibleWorkMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "type",
+                          "publicationDate",
+                          "journalBadge",
+                          "authors",
+                          "journal",
+                          "volume",
+                          "issue",
+                          "number",
+                          "pages",
+                          "description",
+                          "identifiers",
+                          "providedCitation",
+                          "generatedCitation"
+                        ]
+                      }
+                    },
+                    "workMetadata": {
+                      "type": "object",
+                      "properties": {
+                        "type": { "type": "boolean" },
+                        "publicationDate": { "type": "boolean" },
+                        "journalBadge": { "type": "boolean" },
+                        "authors": { "type": "boolean" },
+                        "journal": { "type": "boolean" },
+                        "volume": { "type": "boolean" },
+                        "issue": { "type": "boolean" },
+                        "number": { "type": "boolean" },
+                        "pages": { "type": "boolean" },
+                        "description": { "type": "boolean" },
+                        "identifiers": { "type": "boolean" },
+                        "providedCitation": { "type": "boolean" },
+                        "generatedCitation": { "type": "boolean" }
+                      },
+                      "additionalProperties": false
+                    }
                   },
                   "additionalProperties": false
                 },

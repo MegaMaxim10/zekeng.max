@@ -24,7 +24,7 @@ export function renderPage(page) {
     html += renderBlock(block);
     });
 
-    html += `</main>`;
+    html += `</main>\n`;
 
     if (page.footer) {
     html += renderFooter(page.footer);

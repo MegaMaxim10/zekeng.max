@@ -20,7 +20,11 @@
         },
         "displayOptions": {
           "showTitle": true,
-          "showDetails": "full"
+          "showDetails": "full",
+          "citationStyle": "ieee",
+          "workMetadata": {
+            "number": false
+          }
         }
       }
     }

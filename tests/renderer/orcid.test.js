@@ -53,6 +53,138 @@ describe("renderOrcid", () => {
     expect(html).toContain("DOI");
   });
 
+  it("renders expanded publication metadata and generated Vancouver citation by default", () => {
+    const block = {
+      type: "orcid",
+      data: {
+        orcidId: "0000-0002-0417-5591",
+        sections: ["works"],
+        cachedData: {
+          sections: {
+            works: [
+              {
+                title: "Sample Research Article",
+                type: "journal-article",
+                publicationDate: { year: { value: "2024" } },
+                journalTitle: "Journal of Tests",
+                volume: "17",
+                issue: "2",
+                number: "45",
+                pages: "101-118",
+                contributors: [
+                  { name: "Ada Lovelace", sequence: "first" },
+                  { name: "Alan Turing", sequence: "additional" }
+                ],
+                citationType: "apa",
+                citationText: "Lovelace, A., & Turing, A. (2024). Sample Research Article.",
+                externalIds: {
+                  externalIdentifier: [
+                    {
+                      externalIdentifierType: "DOI",
+                      externalIdentifierId: { value: "10.1234/sample.2024.45" }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    };
+
+    const html = renderOrcid(block);
+    expect(html).toContain("Authors:");
+    expect(html).toContain("Volume");
+    expect(html).toContain("Issue");
+    expect(html).toContain("Number");
+    expect(html).toContain("Pages");
+    expect(html).toContain("VANCOUVER (generated)");
+    expect(html).toContain("https://doi.org/10.1234/sample.2024.45");
+  });
+
+  it("renders generated IEEE citation when configured", () => {
+    const block = {
+      type: "orcid",
+      data: {
+        orcidId: "0000-0002-0417-5591",
+        sections: ["works"],
+        displayOptions: {
+          citationStyle: "ieee"
+        },
+        cachedData: {
+          sections: {
+            works: [
+              {
+                title: "Signal Processing for Networks",
+                type: "journal-article",
+                publicationDate: { year: { value: "2025" } },
+                journalTitle: "IEEE Access",
+                volume: "13",
+                issue: "4",
+                pages: "88-102",
+                contributors: [
+                  { name: "Grace Hopper", sequence: "first" },
+                  { name: "Claude Shannon", sequence: "additional" }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    };
+
+    const html = renderOrcid(block);
+    expect(html).toContain("IEEE (generated)");
+    expect(html).toContain("[1]");
+    expect(html).toContain("&quot;Signal Processing for Networks,&quot;");
+  });
+
+  it("supports disabling selected work metadata from JSON displayOptions", () => {
+    const block = {
+      type: "orcid",
+      data: {
+        orcidId: "0000-0002-0417-5591",
+        sections: ["works"],
+        displayOptions: {
+          workMetadata: {
+            volume: false,
+            issue: false,
+            number: false,
+            pages: false,
+            authors: false,
+            providedCitation: false,
+            generatedCitation: false
+          }
+        },
+        cachedData: {
+          sections: {
+            works: [
+              {
+                title: "Metadata Controlled Publication",
+                type: "journal-article",
+                publicationDate: { year: { value: "2022" } },
+                journalTitle: "Journal of Controls",
+                volume: "10",
+                issue: "1",
+                number: "9",
+                pages: "12-20",
+                contributors: [{ name: "Katherine Johnson", sequence: "first" }]
+              }
+            ]
+          }
+        }
+      }
+    };
+
+    const html = renderOrcid(block);
+    expect(html).not.toContain("Authors:");
+    expect(html).not.toContain("<dt>Volume</dt>");
+    expect(html).not.toContain("<dt>Issue</dt>");
+    expect(html).not.toContain("<dt>Number</dt>");
+    expect(html).not.toContain("<dt>Pages</dt>");
+    expect(html).not.toContain("(generated)");
+  });
+
   it("renders orcid block with cached education data", () => {
     const block = {
       type: "orcid",

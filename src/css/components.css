@@ -103,7 +103,8 @@
     color: var(--text-primary);
     margin: 0 0 0.5rem 0;
     line-height: 1.25;
-    max-width: 44ch;
+    width: 100%;
+    max-width: 100% !important;
 }
 
 .work-subtitle {

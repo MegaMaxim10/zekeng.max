@@ -6,6 +6,7 @@
   "required": ["meta", "body"],
   "properties": {
     "meta": { "$ref": "#/$defs/meta" },
+    "presentation": { "$ref": "#/$defs/presentation" },
     "header": { "$ref": "#/$defs/header" },
     "body": {
       "type": "array",
@@ -25,6 +26,7 @@
           "pattern": "^[a-z0-9\\-]+$"
         },
         "title": { "type": "string" },
+        "description": { "type": "string" },
         "language": {
           "type": "string",
           "enum": ["en"]
@@ -37,6 +39,28 @@
         "tags": {
           "type": "array",
           "items": { "type": "string" }
+        },
+        "canonical": { "type": "string" },
+        "image": { "type": "string" },
+        "robots": { "type": "string" },
+        "social": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" },
+            "image": { "type": "string" },
+            "type": { "type": "string" },
+            "card": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "publishedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modifiedTime": {
+          "type": "string",
+          "format": "date-time"
         },
         "visibility": {
           "type": "string",
@@ -428,6 +452,26 @@
       "properties": {
         "notes": { "type": "string" },
         "related": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "presentation": {
+      "type": "object",
+      "properties": {
+        "template": { "type": "string" },
+        "styleProfile": { "type": "string" },
+        "bodyClass": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_\\-\\s]*$"
+        },
+        "extraStyles": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "extraScripts": {
           "type": "array",
           "items": { "type": "string" }
         }

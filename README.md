@@ -45,6 +45,42 @@ npm run validate-test-and-build
 
 The generated site will be in the `public/` directory. Open `public/index.html` in a browser to view.
 
+## Framework Customization (Templates + Styles)
+
+This project now provides a clear separation between framework defaults and developer customization.
+
+- Framework defaults:
+  - Template: `src/templates/page.html`
+  - Style baseline: `src/css/main.css`, `src/css/components.css`
+- Developer customization:
+  - Config: `framework.config.json`
+  - Per-page declarative presentation: `presentation` object in each page JSON
+  - Custom templates: `src/templates/custom/`
+  - Custom styles: `src/css/custom/`
+
+Build-time linkage resolves which template/styles/scripts to apply per page.
+
+See:
+- `docs/templating-and-styling.md`
+- `docs/style-reference.md`
+- `docs/seo-metadata.md`
+
+## SEO And Social Metadata
+
+The framework now generates SEO and social metadata automatically at build time:
+
+- Description, keywords, canonical, robots
+- Open Graph tags (Facebook/LinkedIn/etc.)
+- Twitter Card tags
+- JSON-LD structured data
+
+Use:
+
+- Global defaults in `framework.config.json` (`seo` section)
+- Per-page overrides in content JSON (`meta.description`, `meta.social`, etc.)
+
+Details and examples: `docs/seo-metadata.md`
+
 ## Architecture
 
 ### Content Pipeline
@@ -366,11 +402,27 @@ The static output can be deployed to:
 - Component styles: `src/css/components.css`
 - Layout: `src/css/layout.css`
 - Themes: `src/css/themes.css`
+- Custom styles (project-specific): `src/css/custom/`
+- Style/template profile config: `framework.config.json`
 
 To apply custom classes to blocks, add the `style` property:
 
 ```json
 { "type": "paragraph", "data": { "text": "..." }, "style": ["custom-class"] }
+```
+
+To declaratively control page-level presentation, add `presentation` to page JSON:
+
+```json
+{
+  "presentation": {
+    "styleProfile": "default",
+    "template": "default",
+    "bodyClass": "profile-academic",
+    "extraStyles": ["assets/css/custom/academic.css"],
+    "extraScripts": ["assets/js/custom/profile.js"]
+  }
+}
 ```
 
 ### Custom JavaScript

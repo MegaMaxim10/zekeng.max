@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="{{language}}" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <title>{{title}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{{headMeta}}
 
-  <link rel="stylesheet" href="{{basePath}}/assets/css/main.css" />
-  <link rel="stylesheet" href="{{basePath}}/assets/css/components.css" />
+{{stylesheets}}
 </head>
-<body>
+<body class="{{bodyClass}}">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <header class="site-header">
@@ -51,6 +51,6 @@
   </div>
 </footer>
 
-<script type="text/javascript" src="{{basePath}}/assets/js/custom/global.js"></script>
+{{scripts}}
 </body>
 </html>

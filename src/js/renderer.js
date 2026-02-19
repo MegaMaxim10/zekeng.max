@@ -10,6 +10,8 @@ import { renderAsset } from "./components/asset.js";
 import { renderForm } from "./components/form.js";
 import { renderHtmlContent } from "./components/html-content.js";
 import { renderOrcid } from "./components/orcid.js";
+import { renderMap } from "./components/map.js";
+import { renderLinkGroups } from "./components/link-groups.js";
 
 export function renderPage(page) {
     let html = "";
@@ -55,14 +57,11 @@ function renderBlock(block) {
       return renderHtmlContent(block);
     case "orcid":
       return renderOrcid(block);
+    case "map":
+      return renderMap(block);
+    case "link-groups":
+      return renderLinkGroups(block);
     default:
       throw new Error(`Unsupported block type: ${block.type}`);
   }
-}
-
-export const siteData = {
-  "title": "Maxime Zekeng - Online Portfolio",
-  "description": "Welcome to the online portfolio of Maxime Zekeng, showcasing research interests, projects, and contact information.",
-  "author": "Maxime Zekeng",
-  "keywords": ["portfolio", "research", "projects", "contact", "Maxime Zekeng"]
 }

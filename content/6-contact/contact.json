@@ -1,40 +1,254 @@
 {
   "meta": {
-    "id": "research",
-    "title": "Research",
+    "id": "contact",
+    "title": "Contact",
     "language": "en",
     "version": "1.0"
   },
   "header": {
-    "title": "Research Activities",
-    "lead": "My research explores the foundations and applications of software engineering."
+    "title": "Contact",
+    "subtitle": "{{cfg:site.contact.fullName}}",
+    "lead": "{{cfg:site.contact.role}} at {{cfg:site.contact.institution}}. Reach out for teaching, research, consulting, and collaboration opportunities."
   },
   "body": [
     {
       "type": "heading",
-      "data": { "level": 2, "text": "Research Interests" }
+      "data": { "level": 2, "text": "Professional Affiliation" }
     },
     {
-      "type": "list",
+      "type": "paragraph",
       "data": {
-        "items": [
-          "Software Engineering",
-          "Workflow Systems",
-          "Formal Languages"
+        "text": "{{hook:contact.profileLine}}."
+      }
+    },
+    {
+      "type": "heading",
+      "data": { "level": 2, "text": "Office Location" }
+    },
+    {
+      "type": "map",
+      "data": {
+        "provider": "openstreetmap",
+        "title": "Office location map",
+        "embedUrl": "{{hook:contact.osmEmbedUrl}}",
+        "linkUrl": "{{hook:contact.osmLinkUrl}}",
+        "address": "{{cfg:site.contact.office}}",
+        "latitude": "{{cfg:site.contact.coordinates.latitude}}",
+        "longitude": "{{cfg:site.contact.coordinates.longitude}}",
+        "height": 380
+      }
+    },
+    {
+      "type": "link-groups",
+      "data": {
+        "title": "Direct Contacts",
+        "columns": 2,
+        "groups": [
+          {
+            "title": "Phone Numbers",
+            "links": [
+              {
+                "label": "{{hook:contact.phoneDisplay(0)}}",
+                "url": "{{hook:contact.phoneTelUrl(0)}}",
+                "external": true,
+                "icon": "phone"
+              },
+              {
+                "label": "{{hook:contact.phoneDisplay(1)}}",
+                "url": "{{hook:contact.phoneTelUrl(1)}}",
+                "external": true,
+                "icon": "phone"
+              },
+              {
+                "label": "WhatsApp: {{hook:contact.phoneDisplay(0)}}",
+                "url": "{{hook:contact.whatsappUrl(0)}}",
+                "external": true,
+                "icon": "phone"
+              }
+            ]
+          },
+          {
+            "title": "Institutional Email",
+            "links": [
+              {
+                "label": "{{cfg:site.contact.emails.institutional}}",
+                "url": "{{hook:contact.emailMailto(institutional)}}",
+                "external": true,
+                "icon": "email"
+              }
+            ]
+          },
+          {
+            "title": "Personal Emails",
+            "links": [
+              {
+                "label": "{{cfg:site.contact.emails.personal.0}}",
+                "url": "{{hook:contact.emailMailto(personal,0)}}",
+                "external": true,
+                "icon": "email"
+              },
+              {
+                "label": "{{cfg:site.contact.emails.personal.1}}",
+                "url": "{{hook:contact.emailMailto(personal,1)}}",
+                "external": true,
+                "icon": "email"
+              },
+              {
+                "label": "{{cfg:site.contact.emails.personal.2}}",
+                "url": "{{hook:contact.emailMailto(personal,2)}}",
+                "external": true,
+                "icon": "email"
+              }
+            ]
+          },
+          {
+            "title": "Professional Emails",
+            "links": [
+              {
+                "label": "Dimsoft: {{cfg:site.contact.emails.professional.0}}",
+                "url": "{{hook:contact.emailMailto(professional,0)}}",
+                "external": true,
+                "icon": "email"
+              },
+              {
+                "label": "Nafasi: {{cfg:site.contact.emails.professional.1}}",
+                "url": "{{hook:contact.emailMailto(professional,1)}}",
+                "external": true,
+                "icon": "email"
+              },
+              {
+                "label": "Kimbocare: {{cfg:site.contact.emails.professional.2}}",
+                "url": "{{hook:contact.emailMailto(professional,2)}}",
+                "external": true,
+                "icon": "email"
+              }
+            ]
+          }
         ]
       }
     },
     {
-      "type": "timeline",
+      "type": "link-groups",
       "data": {
-        "items": [
+        "title": "Social And Research Profiles",
+        "columns": 2,
+        "groups": [
           {
-            "period": "2019 – Today",
-            "title": "Research Fellow",
-            "description": "FUCHSIA Team (INRIA/LIRIMA)"
+            "title": "Professional Profiles",
+            "links": [
+              {
+                "label": "{{hook:contact.socialLabel(github)}}",
+                "url": "{{hook:contact.socialUrl(github)}}",
+                "external": true,
+                "icon": "github"
+              },
+              {
+                "label": "{{hook:contact.socialLabel(linkedin)}}",
+                "url": "{{hook:contact.socialUrl(linkedin)}}",
+                "external": true,
+                "icon": "linkedin"
+              },
+              {
+                "label": "{{hook:contact.socialLabel(x)}}",
+                "url": "{{hook:contact.socialUrl(x)}}",
+                "external": true,
+                "icon": "x"
+              }
+            ]
+          },
+          {
+            "title": "Research Profiles",
+            "links": [
+              {
+                "label": "{{hook:contact.socialLabel(researchgate)}}",
+                "url": "{{hook:contact.socialUrl(researchgate)}}",
+                "external": true,
+                "icon": "researchgate"
+              },
+              {
+                "label": "{{hook:contact.socialLabel(orcid)}}",
+                "url": "{{hook:contact.socialUrl(orcid)}}",
+                "external": true,
+                "icon": "orcid"
+              },
+              {
+                "label": "{{hook:contact.socialLabel(googlescholar)}}",
+                "url": "{{hook:contact.socialUrl(googlescholar)}}",
+                "external": true,
+                "icon": "googlescholar"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "heading",
+      "data": { "level": 2, "text": "Send A Message" }
+    },
+    {
+      "type": "form",
+      "data": {
+        "provider": "formspree",
+        "endpoint": "https://formspree.io/f/mykznyae",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Your name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g. Ada Lovelace",
+            "autocomplete": "name",
+            "helpText": "Use your full name for easier follow-up.",
+            "validation": { "minLength": 2, "maxLength": 80 },
+            "messages": {
+              "required": "Please enter your name.",
+              "tooShort": "Your name must contain at least 2 characters."
+            }
+          },
+          {
+            "name": "email",
+            "label": "Your email",
+            "type": "email",
+            "required": true,
+            "placeholder": "name@example.com",
+            "autocomplete": "email",
+            "validation": { "minLength": 6 },
+            "messages": {
+              "required": "Please provide your email address.",
+              "typeMismatch": "Please enter a valid email address."
+            }
+          },
+          {
+            "name": "subject",
+            "label": "Subject",
+            "type": "text",
+            "required": true,
+            "placeholder": "Short summary of your request",
+            "autocomplete": "off",
+            "validation": { "minLength": 4, "maxLength": 120 },
+            "messages": {
+              "required": "Please add a subject.",
+              "tooShort": "The subject must be at least 4 characters long."
+            }
+          },
+          {
+            "name": "message",
+            "label": "Message",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your project, question, or collaboration proposal...",
+            "validation": { "minLength": 20, "maxLength": 2000 },
+            "messages": {
+              "required": "Please enter your message.",
+              "tooShort": "Your message must be at least 20 characters."
+            }
           }
         ]
       }
     }
-  ]
+  ],
+  "footer": {
+    "notes": "For urgent matters, please call directly."
+  }
 }

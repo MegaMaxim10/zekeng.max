@@ -18,30 +18,31 @@ export function generateNavigation(siteGraph, basePath = "") {
     .forEach(dir => {
       const main = byDir[dir].main;
       const title = main.json.meta?.title || main.json.header?.title;
-
-      html += `<li class="menu-item${(main.json.meta?.genSubMenus === false) ? "" : " has-submenu"}">`;
-      html += `<a class="menu-link" href="${urlFor(main, siteGraph, basePath)}">${title}</a>`;
-
-      if (
+      const subMenusAllowed = (
         main.json.meta?.genSubMenus === undefined ||
         main.json.meta?.genSubMenus === true
-      ) {
-        const children = Object.keys(byDir)
+      );
+      const children = subMenusAllowed
+        ? Object.keys(byDir)
           .filter(d => path.dirname(d) === dir)
-          .sort(compareAlphabetically);
+          .sort(compareAlphabetically)
+        : [];
+      const hasSubmenu = children.length > 0;
 
-        if (children.length) {
-          html += `<ul class="submenu">`;
-          children.forEach(cd => {
-            const childMain = byDir[cd].main;
-            const ct =
-              childMain.json.meta?.title ||
-              childMain.json.header?.title;
+      html += `<li class="menu-item${hasSubmenu ? " has-submenu" : ""}">`;
+      html += `<a class="menu-link" href="${urlFor(main, siteGraph, basePath)}">${title}</a>`;
 
-            html += `<li class="submenu-item"><a class="submenu-link" href="${urlFor(childMain, siteGraph, basePath)}">${ct}</a></li>`;
-          });
-          html += `</ul>`;
-        }
+      if (hasSubmenu) {
+        html += `<ul class="submenu">`;
+        children.forEach(cd => {
+          const childMain = byDir[cd].main;
+          const ct =
+            childMain.json.meta?.title ||
+            childMain.json.header?.title;
+
+          html += `<li class="submenu-item"><a class="submenu-link" href="${urlFor(childMain, siteGraph, basePath)}">${ct}</a></li>`;
+        });
+        html += `</ul>`;
       }
 
       html += `</li>`;

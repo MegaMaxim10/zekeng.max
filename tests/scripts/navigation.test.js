@@ -17,6 +17,10 @@ describe("navigation generation", () => {
     expect(html).toContain("Teaching");
   });
 
+  it("does not mark items without children as submenu items", () => {
+    expect(html).toContain('<li class="menu-item"><a class="menu-link" href="/teaching/index.html">Teaching</a></li>');
+  });
+
   it("generates submenu when allowed", () => {
     expect(html).toContain("Projects");
   });

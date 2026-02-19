@@ -2,6 +2,8 @@ import * as fs from 'node:fs';
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { globSync } from "glob";
+import { readFrameworkConfig } from "./framework-config.js";
+import { resolveContentConfigReferences } from "./content-resolver.js";
 
 const SCHEMA_PATH = "./schemas/page.schema.json";
 const CONTENT_GLOB = "./content/**/*.json";
@@ -18,11 +20,15 @@ addFormats(ajv);
 const validate = ajv.compile(schema);
 
 const files = globSync(CONTENT_GLOB);
+const frameworkConfig = readFrameworkConfig();
 
 let hasErrors = false;
 
 files.forEach(file => {
-  const data = JSON.parse(fs.readFileSync(file, "utf-8"));
+  const data = resolveContentConfigReferences(
+    JSON.parse(fs.readFileSync(file, "utf-8")),
+    frameworkConfig
+  );
   const valid = validate(data);
 
   if (valid) {

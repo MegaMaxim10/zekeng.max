@@ -1,6 +1,6 @@
 # SEO And Social Metadata
 
-The framework generates SEO and social tags at build time for every page.
+SEO metadata is generated at build time for every page.
 
 ## Generated Tags
 
@@ -17,24 +17,30 @@ The framework generates SEO and social tags at build time for every page.
   - `og:site_name`
   - `og:locale`
   - `og:image`
-  - `article:published_time` (when provided)
-  - `article:modified_time` (when provided)
+  - `article:published_time` (if provided)
+  - `article:modified_time` (if provided)
 - Twitter:
   - `twitter:card`
   - `twitter:title`
   - `twitter:description`
   - `twitter:image`
-  - `twitter:site` (when configured)
+  - `twitter:site` (if configured)
 - JSON-LD:
   - `WebPage`
-  - optional `Person` graph node (from framework config)
+  - optional `Person` node
 
 ## Framework Defaults
 
-Set global defaults in `framework.config.json`:
+Configured in `framework.config.json`:
 
 ```json
 {
+  "site": {
+    "title": "My Portfolio",
+    "description": "Default site description",
+    "author": "Author Name",
+    "keywords": ["portfolio", "research"]
+  },
   "seo": {
     "siteUrl": "https://example.com",
     "defaultLocale": "en_US",
@@ -42,7 +48,7 @@ Set global defaults in `framework.config.json`:
     "defaultRobots": "index,follow",
     "defaultImage": "/assets/images/og-default.jpg",
     "twitterHandle": "@example",
-    "organizationName": "Example Name",
+    "organizationName": "Author Name",
     "sameAs": [
       "https://orcid.org/0000-0000-0000-0000",
       "https://www.linkedin.com/in/example"
@@ -51,15 +57,15 @@ Set global defaults in `framework.config.json`:
 }
 ```
 
-## Per-Page Declarative Overrides
+## Per-Page Overrides
 
-In each page JSON:
+Use `meta` in page JSON:
 
 ```json
 {
   "meta": {
     "title": "Publications",
-    "description": "Selected publications and research outputs.",
+    "description": "Selected publications and outputs.",
     "tags": ["research", "publications"],
     "canonical": "/3-research/1-publications/publications.html",
     "image": "/assets/images/publications-og.jpg",
@@ -68,7 +74,7 @@ In each page JSON:
     "modifiedTime": "2026-02-19T09:00:00Z",
     "social": {
       "title": "Publications | My Portfolio",
-      "description": "Research papers, journal articles, and conference outputs.",
+      "description": "Research papers and conference outputs.",
       "image": "/assets/images/publications-social.jpg",
       "type": "article",
       "card": "summary_large_image"
@@ -77,12 +83,13 @@ In each page JSON:
 }
 ```
 
-## Resolution Rules
+## Resolution Order
 
-At build time, values resolve in this order:
-
-1. Page-level `meta.social.*` or `meta.*`
-2. Framework `seo` defaults in `framework.config.json`
-3. Global site defaults (`siteData` in `src/js/renderer.js`)
+At build time, values resolve as:
+1. page-level `meta.social.*` or `meta.*`
+2. framework-level `seo.*` defaults
+3. framework-level `site.*` defaults
 
 Descriptions are automatically trimmed to an SEO-friendly length.
+
+If page `meta.*` values contain content-reference tokens (`cfg`/`hook`), they are resolved first, before SEO generation.

@@ -1,8 +1,8 @@
-# Style Reference
+# Style Hook Reference
 
-This file documents stable class hooks developers can target from custom CSS.
+This file lists stable CSS hooks intended for customization.
 
-## Page-Level Structure
+## Global Layout
 
 - `.site-header`
 - `.breadcrumb`
@@ -15,6 +15,8 @@ This file documents stable class hooks developers can target from custom CSS.
 
 - `.nav-container`
 - `.site-brand`
+- `.brand-link`
+- `.brand-logo`
 - `.site-nav`
 - `.menu-root`
 - `.menu-item`
@@ -24,9 +26,17 @@ This file documents stable class hooks developers can target from custom CSS.
 - `.nav-toggle`
 - `.theme-toggle`
 
-## Common Block Wrappers
+## Footer
 
-All blocks include a wrapper class with the `block-` prefix when applicable:
+- `.site-footer-inner`
+- `.footer-copyright`
+- `.footer-socials`
+- `.footer-socials-links`
+- `.footer-social-link`
+- `.footer-socials-contact`
+- `.footer-updated`
+
+## Block Wrappers
 
 - `.block-paragraph`
 - `.block-list`
@@ -35,24 +45,53 @@ All blocks include a wrapper class with the `block-` prefix when applicable:
 - `.block-form`
 - `.block-asset`
 - `.block-html-content`
+- `.block-map`
+- `.block-link-groups`
 
-Use block `style` arrays in JSON to append project-specific classes.
+## Form System
 
-## ORCID Block
+- `.form-block`
+- `.form-field`
+- `.form-label`
+- `.form-label-text`
+- `.form-required`
+- `.form-help`
+- `.form-error`
+- `.captcha-fieldset`
+- `.captcha-question`
+- `.captcha-input`
 
-- `.orcid-profile`
-- `.orcid-section`
-- `.orcid-works`
-- `.orcid-work`
-- `.orcid-peer-reviews`
-- `.peer-review`
+## Dialog (Framework Confirmation)
 
-## Cards, Timeline, Forms
+- `.framework-dialog`
+- `.framework-dialog-content`
+- `.framework-dialog-title`
+- `.framework-dialog-message`
+- `.framework-dialog-actions`
+- `.framework-dialog-btn`
+- `.framework-dialog-btn.is-primary`
 
-- `.card-grid`, `.card`
-- `.timeline`, `.timeline-item`, `.timeline-content`, `.timeline-period`
-- `.contact-form`
+## Map And Link Groups
+
+- `.map-block`
+- `.map-frame`
+- `.map-meta`
+- `.map-address`
+- `.map-coordinates`
+- `.map-open-link`
+- `.link-groups`
+- `.link-groups-grid`
+- `.link-group`
+- `.link-groups-list`
+- `.link-groups-link`
+- `.link-groups-icon`
 
 ## Extension Rule
 
-Prefer adding custom classes via page/block JSON and targeting them in `src/css/custom/*.css` instead of overriding framework classes directly.
+Preferred approach:
+1. add custom class names with block/page `style` or `presentation.bodyClass`
+2. target those classes in `src/css/custom/*.css`
+
+Avoid direct edits to framework selectors unless you are evolving framework behavior.
+
+For content-level data reuse, prefer `cfg`/`hook` tokens in JSON over styling workarounds.

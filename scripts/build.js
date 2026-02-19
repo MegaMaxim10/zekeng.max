@@ -14,9 +14,11 @@ import * as fs from "node:fs";
 import path from "node:path";
 import { globSync } from "glob";
 
-import { renderPage, siteData } from "../src/js/renderer.js";
+import { renderPage } from "../src/js/renderer.js";
 import { preprocessPage } from "../src/js/block-processors.js";
 import { minifyDirectory } from "./minify.js";
+import { readFrameworkConfig } from "./framework-config.js";
+import { resolveContentConfigReferences } from "./content-resolver.js";
 import { buildSiteGraph, outputPathFor } from "./site-graph.js";
 import {
   generateNavigation,
@@ -29,80 +31,13 @@ const CONTENT_DIR = "content";
 const OUTPUT_DIR = "public";
 const ASSETS_DIR = "assets";
 const CSS_DIR = "src/css";
+const FRAMEWORK_JS_DIR = "src/js/framework";
 const CUSTOM_JS_DIR = "src/js/custom";
-const FRAMEWORK_CONFIG_PATH = "framework.config.json";
-const DEFAULT_TEMPLATE_PATH = "src/templates/page.html";
 const BASE_PATH = process.env.BASE_PATH || "";
-const SITE_TITLE = siteData?.title || "My Static Site";
-
-const DEFAULT_FRAMEWORK_CONFIG = {
-  templates: {
-    default: DEFAULT_TEMPLATE_PATH,
-    entries: {
-      default: DEFAULT_TEMPLATE_PATH
-    }
-  },
-  styles: {
-    defaultProfile: "default",
-    profiles: {
-      default: [
-        "assets/css/main.css",
-        "assets/css/components.css"
-      ]
-    }
-  },
-  scripts: {
-    default: ["assets/js/custom/global.js"]
-  },
-  seo: {
-    siteUrl: "",
-    defaultLocale: "en_US",
-    defaultType: "website",
-    defaultRobots: "index,follow",
-    defaultImage: "",
-    twitterHandle: "",
-    organizationName: "",
-    sameAs: []
-  }
-};
-
-function readFrameworkConfig() {
-  if (!fs.existsSync(FRAMEWORK_CONFIG_PATH)) {
-    return DEFAULT_FRAMEWORK_CONFIG;
-  }
-
-  const userConfig = JSON.parse(fs.readFileSync(FRAMEWORK_CONFIG_PATH, "utf-8"));
-  return {
-    ...DEFAULT_FRAMEWORK_CONFIG,
-    ...userConfig,
-    templates: {
-      ...DEFAULT_FRAMEWORK_CONFIG.templates,
-      ...(userConfig.templates || {}),
-      entries: {
-        ...DEFAULT_FRAMEWORK_CONFIG.templates.entries,
-        ...(userConfig.templates?.entries || {})
-      }
-    },
-    styles: {
-      ...DEFAULT_FRAMEWORK_CONFIG.styles,
-      ...(userConfig.styles || {}),
-      profiles: {
-        ...DEFAULT_FRAMEWORK_CONFIG.styles.profiles,
-        ...(userConfig.styles?.profiles || {})
-      }
-    },
-    scripts: {
-      ...DEFAULT_FRAMEWORK_CONFIG.scripts,
-      ...(userConfig.scripts || {})
-    },
-    seo: {
-      ...DEFAULT_FRAMEWORK_CONFIG.seo,
-      ...(userConfig.seo || {})
-    }
-  };
-}
 
 const frameworkConfig = readFrameworkConfig();
+const siteData = frameworkConfig.site || {};
+const SITE_TITLE = siteData?.title || "My Static Site";
 const templateCache = new Map();
 
 if (fs.existsSync(OUTPUT_DIR)) {
@@ -157,6 +92,41 @@ function unique(items) {
   return [...new Set(items)];
 }
 
+function uniqueScriptEntries(entries) {
+  const seen = new Set();
+  const output = [];
+
+  for (const entry of entries) {
+    const key = `${entry.src}|${entry.module ? "m" : "c"}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    output.push(entry);
+  }
+
+  return output;
+}
+
+function normalizeScriptEntry(entry) {
+  if (typeof entry === "string") {
+    return {
+      src: normalizeAssetHref(entry),
+      module: false
+    };
+  }
+
+  if (entry && typeof entry === "object") {
+    if (!entry.src) {
+      throw new Error(`Invalid script entry: ${JSON.stringify(entry)}`);
+    }
+    return {
+      src: normalizeAssetHref(entry.src),
+      module: Boolean(entry.module)
+    };
+  }
+
+  throw new Error(`Unsupported script entry type: ${typeof entry}`);
+}
+
 function resolvePageAssets(pageJson) {
   const presentation = pageJson.presentation || {};
   const stylesConfig = frameworkConfig.styles || {};
@@ -173,11 +143,11 @@ function resolvePageAssets(pageJson) {
   const scriptHrefs = unique([
     ...(frameworkConfig.scripts?.default || []),
     ...(presentation.extraScripts || [])
-  ]).map(normalizeAssetHref);
+  ]).map(normalizeScriptEntry);
 
   return {
     stylesheetHrefs,
-    scriptHrefs,
+    scriptEntries: uniqueScriptEntries(scriptHrefs),
     bodyClass: presentation.bodyClass || "",
     template: presentation.template || null
   };
@@ -189,10 +159,54 @@ function renderStylesheetTags(hrefs) {
     .join("\n");
 }
 
-function renderScriptTags(hrefs) {
-  return hrefs
-    .map((href) => `<script type="text/javascript" src="${href}"></script>`)
+function renderScriptTags(entries) {
+  return entries
+    .map((entry) => `<script type="${entry.module ? "module" : "text/javascript"}" src="${entry.src}"></script>`)
     .join("\n");
+}
+
+function renderFooterSocialLinks() {
+  const socials = Array.isArray(siteData?.contact?.socials) ? siteData.contact.socials : [];
+  if (socials.length === 0) return "";
+
+  return socials.map((social) => {
+    const label = escapeHtml(social.label || social.key || "Social");
+    const href = escapeHtml(social.url || "#");
+    const icon = socialIconMarkup(social.key || "");
+    return `<a class="footer-social-link" href="${href}" target="_blank" rel="noopener noreferrer" aria-label="${label}">${icon}</a>`;
+  }).join("");
+}
+
+function renderFooterContactSummary() {
+  const contact = siteData?.contact || {};
+  const institutionalEmail = contact?.emails?.institutional || "";
+  const phones = Array.isArray(contact?.phones) ? contact.phones : [];
+
+  const parts = [];
+  if (institutionalEmail) {
+    parts.push(`<a href="mailto:${escapeHtml(institutionalEmail)}">${escapeHtml(institutionalEmail)}</a>`);
+  }
+  phones.forEach((phone) => {
+    const phoneHref = String(phone || "").replace(/\s+/g, "");
+    if (!phoneHref) return;
+    parts.push(`<a href="tel:${escapeHtml(phoneHref)}">${escapeHtml(phone)}</a>`);
+  });
+
+  return parts.join(" | ");
+}
+
+function socialIconMarkup(key) {
+  const iconByKey = {
+    github: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.32c-2.23.49-2.7-.95-2.7-.95-.36-.92-.89-1.16-.89-1.16-.73-.5.05-.49.05-.49.81.06 1.24.84 1.24.84.71 1.23 1.87.87 2.33.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.58.82-2.14-.08-.2-.36-1.01.08-2.12 0 0 .67-.21 2.2.82A7.5 7.5 0 0 1 8 3.8c.68 0 1.37.09 2.01.26 1.53-1.03 2.2-.82 2.2-.82.44 1.11.16 1.92.08 2.12.51.56.82 1.27.82 2.14 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.14.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>',
+    linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.48 2.48 0 1 0 5 8.46 2.48 2.48 0 0 0 4.98 3.5ZM3 9h4v12H3zm7 0h3.84v1.71h.05c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.66 4.8 6.12V21h-4v-5.52c0-1.32-.02-3.02-1.84-3.02-1.85 0-2.13 1.45-2.13 2.92V21h-4z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.77 7.73L23.2 22h-6.24l-4.88-7.16L5.8 22H2.7l7.24-8.27L1.6 2h6.4l4.4 6.57L18.9 2zM17.8 20h1.73L7.08 3.9H5.22z"/></svg>',
+    researchgate: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><text x="12" y="15" text-anchor="middle" font-size="8.5" font-weight="700" font-family="Arial, sans-serif" fill="currentColor">RG</text></svg>',
+    orcid: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><text x="12" y="15" text-anchor="middle" font-size="8.5" font-weight="700" font-family="Arial, sans-serif" fill="currentColor">iD</text></svg>',
+    googlescholar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 8l11 6 9-4.91V17h2V8L12 2z"/><path d="M6 12.9V17c0 2.76 2.69 5 6 5s6-2.24 6-5v-4.1l-6 3.28-6-3.28z"/></svg>'
+  };
+
+  const icon = iconByKey[String(key).toLowerCase()] || '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>';
+  return `<span class="footer-social-icon">${icon}</span>`;
 }
 
 function escapeHtml(value) {
@@ -325,7 +339,10 @@ function loadAllPages() {
   const files = globSync(`${CONTENT_DIR}/**/*.json`);
   return files.map((file) => ({
     file,
-    json: JSON.parse(fs.readFileSync(file, "utf-8")),
+    json: resolveContentConfigReferences(
+      JSON.parse(fs.readFileSync(file, "utf-8")),
+      frameworkConfig
+    ),
     dir: path.dirname(file),
     name: path.basename(file)
   }));
@@ -364,10 +381,12 @@ for (const page of pages) {
     year: new Date().getFullYear(),
     lastModified,
     stylesheets: renderStylesheetTags(pageAssets.stylesheetHrefs),
-    scripts: renderScriptTags(pageAssets.scriptHrefs),
+    scripts: renderScriptTags(pageAssets.scriptEntries),
     bodyClass: pageAssets.bodyClass,
     language: seo.language,
-    headMeta: seo.headMeta
+    headMeta: seo.headMeta,
+    footerSocialLinks: renderFooterSocialLinks(),
+    footerContactSummary: renderFooterContactSummary()
   });
 
   const outPath = path.join(OUTPUT_DIR, outPathRelative);
@@ -379,6 +398,7 @@ for (const page of pages) {
 console.log("Copying static assets...");
 copyDir(ASSETS_DIR, path.join(OUTPUT_DIR, "assets"));
 copyDir(CSS_DIR, path.join(OUTPUT_DIR, "assets/css"));
+copyDir(FRAMEWORK_JS_DIR, path.join(OUTPUT_DIR, "assets/js/framework"));
 copyDir(CUSTOM_JS_DIR, path.join(OUTPUT_DIR, "assets/js/custom"));
 console.log("Static assets copied");
 

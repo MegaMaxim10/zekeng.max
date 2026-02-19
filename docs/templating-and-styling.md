@@ -1,55 +1,44 @@
 # Templating And Styling Guide
 
-This framework separates **framework-provided** presentation from **developer-customizable** presentation.
+This guide explains how templates, styles, and scripts are resolved at build time.
 
-## Separation Model
+## 1. Separation Model
 
-- Framework-provided:
-  - Core template contract: `src/templates/page.html`
-  - Core styles: `src/css/main.css`, `src/css/components.css`
-  - Optional framework styles: `src/css/layout.css`, `src/css/themes.css`
-  - Default runtime script: `src/js/custom/global.js`
-- Developer-customizable:
-  - Per-page presentation config in content JSON (`presentation`)
-  - Custom style profiles in `framework.config.json`
-  - Custom templates in `src/templates/custom/`
-  - Custom styles in `src/css/custom/`
-  - Optional per-page extra styles/scripts
+Framework-owned:
+- `src/templates/page.html` (default template contract)
+- `src/css/main.css`, `src/css/components.css` (framework baseline)
+- `src/js/framework/` (framework runtime behavior)
 
-## Build-Time Linkage
+Developer-owned:
+- `framework.config.json` (configuration surface)
+- `src/templates/custom/` (custom templates)
+- `src/css/custom/` (custom style layers)
+- `src/js/custom/global.js` (project-specific client logic)
+- page-level `presentation` overrides in content JSON
 
-Linkage happens in `scripts/build.js` at build time:
+## 2. Build-Time Resolution
 
-1. Load `framework.config.json`
-2. For each page JSON:
-   - Resolve `presentation.template`
-   - Resolve `presentation.styleProfile`
-   - Add `presentation.extraStyles` and `presentation.extraScripts`
-   - Inject `presentation.bodyClass`
-3. Render final page through placeholders in template:
-   - `{{stylesheets}}`
-   - `{{scripts}}`
-   - `{{bodyClass}}`
+In `scripts/build.js`, for each page:
+1. Resolve template from `presentation.template` or `templates.default`.
+2. Resolve style profile from `presentation.styleProfile` or `styles.defaultProfile`.
+3. Merge profile styles + `presentation.extraStyles`.
+4. Merge default scripts + `presentation.extraScripts`.
+5. Resolve content tokens (`cfg` / `hook`) in page JSON.
+6. Inject placeholders into the selected template.
 
-## Declarative Page Presentation
+Template placeholders expected by default contract:
+- `{{title}}`
+- `{{siteTitle}}`
+- `{{navigation}}`
+- `{{breadcrumb}}`
+- `{{content}}`
+- `{{relatedPages}}`
+- `{{stylesheets}}`
+- `{{scripts}}`
+- `{{bodyClass}}`
+- `{{headMeta}}`
 
-You can add this to any page JSON:
-
-```json
-{
-  "presentation": {
-    "template": "default",
-    "styleProfile": "framework-full",
-    "bodyClass": "profile-academic",
-    "extraStyles": ["assets/css/custom/portfolio-academic.css"],
-    "extraScripts": ["assets/js/custom/profile-interactions.js"]
-  }
-}
-```
-
-## `framework.config.json`
-
-Use this file to define style/template options exposed by the framework.
+## 3. `framework.config.json` Template And Style Configuration
 
 ```json
 {
@@ -72,41 +61,62 @@ Use this file to define style/template options exposed by the framework.
         "assets/css/components.css",
         "assets/css/layout.css",
         "assets/css/themes.css"
-      ],
-      "academic-clean": [
-        "assets/css/main.css",
-        "assets/css/components.css",
-        "assets/css/custom/academic-clean.css"
       ]
     }
-  },
-  "scripts": {
-    "default": ["assets/js/custom/global.js"]
   }
 }
 ```
 
-## Template Contract
+## 4. Script Entries
 
-Any custom template should include these placeholders:
+`scripts.default` and `presentation.extraScripts` accept:
+- string path (classic script)
+- object `{ "src": "...", "module": true|false }`
 
-- `{{title}}`
-- `{{siteTitle}}`
-- `{{navigation}}`
-- `{{breadcrumb}}`
-- `{{content}}`
-- `{{relatedPages}}`
-- `{{stylesheets}}`
-- `{{scripts}}`
-- `{{bodyClass}}`
+Example:
 
-The default template is `src/templates/page.html`.
+```json
+{
+  "scripts": {
+    "default": [
+      { "src": "assets/js/framework/runtime.js", "module": true },
+      "assets/js/custom/global.js"
+    ]
+  }
+}
+```
 
-## Recommended Folder Conventions
+## 5. Per-Page Presentation
 
-- Framework styles: keep in `src/css/`
-- Custom styles: add in `src/css/custom/`
-- Framework templates: `src/templates/`
-- Custom templates: `src/templates/custom/`
+Inside any page JSON:
 
-All files under `src/css/` and `src/js/custom/` are copied to `public/assets/` during build.
+```json
+{
+  "presentation": {
+    "template": "default",
+    "styleProfile": "framework-full",
+    "bodyClass": "profile-academic",
+    "extraStyles": ["assets/css/custom/academic.css"],
+    "extraScripts": [
+      { "src": "assets/js/custom/academic.js", "module": true }
+    ]
+  }
+}
+```
+
+## 6. Recommended Workflow
+
+1. Keep framework files generic.
+2. Add project-specific CSS in `src/css/custom/`.
+3. Add project-specific JS in `src/js/custom/global.js` or extra scripts.
+4. Use `presentation` per page when layout or assets differ.
+5. Run `npm run validate-test-and-build`.
+
+## 7. Content References
+
+Page JSON can reference config-derived values:
+
+- `{{cfg:...}}` for direct config access
+- `{{hook:...}}` for computed values
+
+See `docs/content-references.md` for syntax and hook list.

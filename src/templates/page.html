@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>{{title}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="{{basePath}}/assets/icons/favicon-zen.svg" />
 {{headMeta}}
 
 {{stylesheets}}
@@ -14,7 +15,9 @@
 <header class="site-header">
   <div class="nav-container">
     <div class="site-brand">
-      <a href="{{basePath}}/">{{siteTitle}}</a>
+      <a href="{{basePath}}/" class="brand-link" aria-label="{{siteTitle}} home">
+        <img class="brand-logo" src="{{basePath}}/assets/images/logo-zen.svg" alt="ZEN logo" />
+      </a>
     </div>
 
     <button
@@ -46,8 +49,14 @@
 
 <footer class="site-footer">
   <div class="site-footer-inner">
-    <p>&copy; {{year}} {{siteTitle}}</p>
-    <p>Last updated: {{lastModified}}</p>
+    <p class="footer-copyright">&copy; {{year}} {{siteTitle}}</p>
+    <div class="footer-socials" aria-label="Social media links">
+      <div class="footer-socials-links">
+        {{footerSocialLinks}}
+      </div>
+      <p class="footer-socials-contact">{{footerContactSummary}}</p>
+    </div>
+    <p class="footer-updated">Last updated: {{lastModified}}</p>
   </div>
 </footer>
 

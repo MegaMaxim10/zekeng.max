@@ -1,0 +1,38 @@
+{
+  "templates": {
+    "default": "src/templates/page.html",
+    "entries": {
+      "default": "src/templates/page.html"
+    }
+  },
+  "styles": {
+    "defaultProfile": "default",
+    "profiles": {
+      "default": [
+        "assets/css/main.css",
+        "assets/css/components.css"
+      ],
+      "framework-full": [
+        "assets/css/main.css",
+        "assets/css/components.css",
+        "assets/css/layout.css",
+        "assets/css/themes.css"
+      ]
+    }
+  },
+  "scripts": {
+    "default": [
+      "assets/js/custom/global.js"
+    ]
+  },
+  "seo": {
+    "siteUrl": "",
+    "defaultLocale": "en_US",
+    "defaultType": "website",
+    "defaultRobots": "index,follow",
+    "defaultImage": "",
+    "twitterHandle": "",
+    "organizationName": "",
+    "sameAs": []
+  }
+}

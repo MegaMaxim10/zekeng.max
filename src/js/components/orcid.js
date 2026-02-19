@@ -276,8 +276,9 @@ function renderWork(work, options = {}) {
       </div>`;
   }
 
+  const showJournalDetail = metadata.journal && (!metadata.journalBadge || !work.journalTitle);
   const detailItems = [
-    ["Journal", metadata.journal ? work.journalTitle : ""],
+    ["Journal", showJournalDetail ? work.journalTitle : ""],
     ["Volume", metadata.volume ? work.volume : ""],
     ["Issue", metadata.issue ? work.issue : ""],
     ["Number", metadata.number ? work.number : ""],
@@ -316,6 +317,20 @@ function renderWork(work, options = {}) {
     </div>`;
   }
 
+  const metadataPanel = detailItems.length > 0 || citationSection;
+  const metadataToggleId = `work-metadata-toggle-${options.citationIndex || 0}`;
+  const expandableMetadataControl = metadataPanel
+    ? `<label class="work-metadata-toggle" for="${metadataToggleId}">Cite & details</label>`
+    : "";
+  const expandableMetadataContent = metadataPanel
+    ? `<div class="work-metadata-panel">
+      <div class="work-metadata-content">
+        ${detailsSection}
+        ${citationSection}
+      </div>
+    </div>`
+    : "";
+
   const identifierItems = [];
   if (doi) {
     identifierItems.push(`<span class="identifier doi">DOI: <a href="${escapeHtml(doi.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(doi.doi)}</a></span>`);
@@ -336,25 +351,30 @@ function renderWork(work, options = {}) {
     metadata.journalBadge && work.journalTitle ? `<span class="work-journal">${escapeHtml(work.journalTitle)}</span>` : ""
   ].filter(Boolean);
 
+  const publicationLink = work.url
+    ? `<a href="${escapeHtml(work.url)}" target="_blank" rel="noopener noreferrer" class="btn-link work-action-link">View publication</a>`
+    : "";
+  const hasMetaRow = metadataBadges.length > 0 || publicationLink || expandableMetadataControl;
+
   return `
     <article class="orcid-work">
       <h4 class="work-title">${escapeHtml(work.title)}</h4>
       ${work.subtitle ? `<p class="work-subtitle">${escapeHtml(work.subtitle)}</p>` : ""}
-      
-      ${metadataBadges.length > 0 ? `<div class="work-metadata">${metadataBadges.join("")}</div>` : ""}
-      
       ${contributorsList}
-      ${detailsSection}
+      ${metadataPanel ? `<input type="checkbox" id="${metadataToggleId}" class="work-metadata-checkbox" />` : ""}
+      
+      ${hasMetaRow ? `<div class="work-meta-row">
+        ${metadataBadges.length > 0 ? `<div class="work-metadata">${metadataBadges.join("")}</div>` : ""}
+        <div class="work-actions">
+          ${expandableMetadataControl}
+          ${publicationLink}
+        </div>
+      </div>` : ""}
+      ${expandableMetadataContent}
       
       ${metadata.description && work.description ? `<p class="work-description">${escapeHtml(work.description)}</p>` : ""}
       
       ${metadata.identifiers && identifierItems.length > 0 ? `<div class="work-identifiers">${identifierItems.join("")}</div>` : ""}
-      
-      ${citationSection}
-      
-      <div class="work-links">
-        ${work.url ? `<a href="${escapeHtml(work.url)}" target="_blank" rel="noopener noreferrer" class="btn-link">View Publication</a>` : ""}
-      </div>
     </article>
   `;
 }

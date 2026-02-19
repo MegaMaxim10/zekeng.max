@@ -53,7 +53,7 @@ describe("renderOrcid", () => {
     expect(html).toContain("DOI");
   });
 
-  it("renders expanded publication metadata and generated Vancouver citation by default", () => {
+  it("renders citation and extra metadata inside a collapsed panel by default", () => {
     const block = {
       type: "orcid",
       data: {
@@ -94,12 +94,15 @@ describe("renderOrcid", () => {
 
     const html = renderOrcid(block);
     expect(html).toContain("Authors:");
+    expect(html).toContain("Cite & details");
+    expect(html).toContain("work-metadata-panel");
     expect(html).toContain("Volume");
     expect(html).toContain("Issue");
     expect(html).toContain("Number");
     expect(html).toContain("Pages");
     expect(html).toContain("VANCOUVER (generated)");
     expect(html).toContain("https://doi.org/10.1234/sample.2024.45");
+    expect(html).not.toContain("<dt>Journal</dt>");
   });
 
   it("renders generated IEEE citation when configured", () => {

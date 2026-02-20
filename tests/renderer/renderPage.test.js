@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderPage } from "../../src/js/renderer.js";
+import { renderPage } from "../../scripts/core/renderer.js";
 import * as fs from "node:fs";
 
 describe("renderPage integration", () => {

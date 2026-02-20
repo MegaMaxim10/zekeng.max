@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
 import fs from "node:fs";
-import { copyDir } from "../../scripts/assets.js";
+import { copyDir } from "../../scripts/builders/assets.js";
 
 const TMP = "tmp-test-assets";
 
@@ -18,3 +18,5 @@ describe("copyDir", () => {
         expect(fs.existsSync(`${TMP}/dest/a.txt`)).toBe(true);
     });
 });
+
+

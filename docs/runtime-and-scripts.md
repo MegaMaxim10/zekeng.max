@@ -1,67 +1,61 @@
 # Runtime And Scripts Guide
 
-This framework separates reusable runtime behavior from project-specific behavior.
+This framework separates template runtime behavior from project customization runtime.
 
 ## Runtime Layers
 
-Framework runtime:
-- source: `src/js/framework/runtime.js`
-- copied to: `public/assets/js/framework/runtime.js`
-- purpose: theme toggle, navigation state, header offset sync, form validation/security, dialog
+Template runtime:
+- declared in each template `template-config.json`
+- source example: `templates/default/assets/js/runtime.js`
+- copied to: `public/assets/templates/<template-name>/...`
+- purpose: template-specific shared behavior (theme/nav/layout/forms/dialog)
 
-Custom runtime:
-- source: `src/js/custom/global.js`
-- copied to: `public/assets/js/custom/global.js`
-- purpose: developer-specific scripts only
+Project custom runtime:
+- source: `src/js/custom.js`
+- copied to: `public/assets/js/custom.js`
+- purpose: portfolio-specific behavior only
 
-Related build-time content layer:
-- `scripts/framework-config.js` (framework config merge/load)
-- `scripts/content-resolver.js` (resolves `cfg`/`hook` tokens in content)
+Optional custom scripts:
+- any file under `src/js/`
+- declare path in `portfolio-config.json` (`custom.scripts`) or page `presentation.extraScripts`
+- if `custom.scripts` is omitted, the default global script is `assets/js/custom.js`
 
-## Framework Runtime Modules
+## Core Code Location
 
-`src/js/framework/components/theme.js`
-- theme initialization and toggle behavior
+Build/render framework internals now live in:
+- `scripts/core/components/` (block renderers)
+- `scripts/core/block-processors.js` (async preprocessors)
+- `scripts/core/utils/` (shared build-time utilities)
 
-`src/js/framework/components/navigation.js`
-- mobile nav expand/collapse
-- active menu and breadcrumb link marking
-
-`src/js/framework/components/layout.js`
-- fixed header offset CSS variable sync
-- optional decorative layout elements
-
-`src/js/framework/components/forms.js`
-- declarative form field validation and inline errors
-- provider-specific form behavior (for example Formspree confirmation + anti-bot challenge)
-
-`src/js/framework/components/dialog.js`
-- reusable custom confirmation dialog
+Build orchestration lives in:
+- `scripts/builders/`
 
 ## Script Configuration
 
-Configure default scripts in `framework.config.json`:
+Global default custom scripts in `portfolio-config.json`:
 
 ```json
 {
-  "scripts": {
-    "default": [
-      { "src": "assets/js/framework/runtime.js", "module": true },
-      "assets/js/custom/global.js"
+  "custom": {
+    "scripts": ["assets/js/custom.js"]
+  }
+}
+```
+
+Per-page additional scripts:
+
+```json
+{
+  "presentation": {
+    "extraScripts": [
+      { "src": "assets/js/academic.js", "module": true }
     ]
   }
 }
 ```
 
-Script entry formats:
-- string: `"assets/js/custom/global.js"` (classic script)
-- object: `{ "src": "...", "module": true }`
-
-Per-page additional scripts can be added with `presentation.extraScripts`.
-
 ## Best Practices
 
-1. Keep shared behavior in `src/js/framework/components/`.
-2. Keep project-only behavior in `src/js/custom/global.js`.
+1. Keep template-level reusable behavior inside template folders.
+2. Keep project-only behavior in `src/js/custom.js` and extra `src/js/*` files.
 3. Avoid editing generated `public/` scripts directly.
-4. If adding new framework runtime modules, import and initialize them in `src/js/framework/runtime.js`.

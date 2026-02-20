@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildSiteGraph, outputPathFor } from "../../scripts/site-graph.js";
+import { buildSiteGraph, outputPathFor } from "../../scripts/builders/site-graph.js";
 import { pages } from "../fixtures/site.nested.js";
 
 describe("site graph", () => {
@@ -23,3 +23,5 @@ describe("site graph", () => {
     expect(outputPathFor(papers)).toBeOneOf(["research/papers.html", String.raw`research\papers.html`]);
   });
 });
+
+

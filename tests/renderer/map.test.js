@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderMap } from "../../src/js/components/map.js";
+import { renderMap } from "../../scripts/core/components/map.js";
 
 describe("renderMap", () => {
   it("renders an embeddable map with metadata", () => {
@@ -21,3 +21,4 @@ describe("renderMap", () => {
     expect(html).toContain("Coordinates: 5.438799, 10.071175");
   });
 });
+

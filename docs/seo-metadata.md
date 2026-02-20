@@ -31,7 +31,7 @@ SEO metadata is generated at build time for every page.
 
 ## Framework Defaults
 
-Configured in `framework.config.json`:
+Configured in `portfolio-config.json`:
 
 ```json
 {
@@ -93,3 +93,6 @@ At build time, values resolve as:
 Descriptions are automatically trimmed to an SEO-friendly length.
 
 If page `meta.*` values contain content-reference tokens (`cfg`/`hook`), they are resolved first, before SEO generation.
+
+If `seo.defaultImage` is omitted, the build falls back to `site.branding.favicon`.
+

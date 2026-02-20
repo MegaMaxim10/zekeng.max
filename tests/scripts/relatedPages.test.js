@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildSiteGraph } from "../../scripts/site-graph.js";
-import { generateRelatedPages } from "../../scripts/navigation.js";
+import { buildSiteGraph } from "../../scripts/builders/site-graph.js";
+import { generateRelatedPages } from "../../scripts/builders/navigation.js";
 import { pages } from "../fixtures/site.nested.js";
 
 describe("related pages", () => {
@@ -22,3 +22,5 @@ describe("related pages", () => {
     expect(generateRelatedPages(teaching, graph)).toBe("");
   });
 });
+
+

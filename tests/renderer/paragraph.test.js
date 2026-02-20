@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderParagraph } from "../../src/js/components/paragraph.js";
+import { renderParagraph } from "../../scripts/core/components/paragraph.js";
 
 describe("renderParagraph", () => {
     it("renders a paragraph block", () => {
@@ -13,3 +13,4 @@ describe("renderParagraph", () => {
         expect(html).toContain("Hello world");
     });
 });
+

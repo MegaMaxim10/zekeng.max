@@ -1,0 +1,85 @@
+{
+  "site": {
+    "title": "ZEKENG NDADJI Milliam Maxime",
+    "description": "Welcome to the online portfolio of ZEKENG NDADJI Milliam Maxime, Senior Lecturer and Researcher.",
+    "author": "ZEKENG NDADJI Milliam Maxime",
+    "keywords": [
+      "portfolio",
+      "research",
+      "teaching",
+      "contact",
+      "ZEKENG NDADJI Milliam Maxime"
+    ],
+    "branding": {
+      "favicon": "assets/icons/favicon-zen.svg",
+      "logo": {
+        "src": "assets/images/logo-zen.svg",
+        "alt": "ZEN logo"
+      }
+    },
+    "contact": {
+      "fullName": "ZEKENG NDADJI Milliam Maxime",
+      "role": "Senior Lecturer/Researcher",
+      "institution": "University of Dschang",
+      "department": "Department of Mathematics and Computer Science, Faculty of Science",
+      "postalAddress": "P.O Box 67, Dschang",
+      "office": "Door 237B, Faculty of Science building, Campus C, in front of Amphi 600",
+      "coordinates": {
+        "latitude": 5.438799,
+        "longitude": 10.071175
+      },
+      "phones": [
+        "+237674965370",
+        "+237697329108"
+      ],
+      "emails": {
+        "institutional": "ndadji.maxime@univ-dschang.org",
+        "personal": [
+          "ndadjimaxime@yahoo.fr",
+          "ndadjimaxime@gmail.com",
+          "ndadjimaxime@outlook.fr"
+        ],
+        "professional": [
+          "ndadjimaxime@dimsoft.eu",
+          "maxime.ndadji@nafasi-digital.com",
+          "maxime.zekeng@kimbocare.com"
+        ]
+      },
+      "socials": [
+        {
+          "key": "github",
+          "label": "GitHub",
+          "url": "https://github.com/MegaMaxim10"
+        },
+        {
+          "key": "linkedin",
+          "label": "LinkedIn",
+          "url": "https://www.linkedin.com/in/ndadjimilliam/"
+        },
+        {
+          "key": "x",
+          "label": "X",
+          "url": "https://x.com/Maxmil10"
+        },
+        {
+          "key": "researchgate",
+          "label": "ResearchGate",
+          "url": "https://www.researchgate.net/profile/Milliam-Zekeng-Ndadji"
+        },
+        {
+          "key": "orcid",
+          "label": "ORCID",
+          "url": "https://orcid.org/my-orcid?orcid=0000-0002-0417-5591"
+        },
+        {
+          "key": "googlescholar",
+          "label": "Google Scholar",
+          "url": "https://scholar.google.com/citations?user=KtPSgGYAAAAJ"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "default": "default"
+  }
+}

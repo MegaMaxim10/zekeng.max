@@ -565,7 +565,6 @@
       "type": "object",
       "properties": {
         "template": { "type": "string" },
-        "styleProfile": { "type": "string" },
         "bodyClass": {
           "type": "string",
           "pattern": "^[a-zA-Z0-9_\\-\\s]*$"
@@ -576,7 +575,20 @@
         },
         "extraScripts": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "required": ["src"],
+                "properties": {
+                  "src": { "type": "string" },
+                  "module": { "type": "boolean" }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
         }
       },
       "additionalProperties": false

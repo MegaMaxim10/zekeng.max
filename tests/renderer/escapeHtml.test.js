@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { escapeHtml } from "../../src/js/utils/render-utils.js";
+import { escapeHtml } from "../../scripts/core/utils/render-utils.js";
 
 describe("escapeHtml", () => {
   it("escapes HTML special characters", () => {

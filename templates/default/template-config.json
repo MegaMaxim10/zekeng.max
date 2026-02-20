@@ -1,0 +1,14 @@
+{
+  "name": "default",
+  "html": "page.html",
+  "styles": [
+    "assets/css/main.css",
+    "assets/css/components.css"
+  ],
+  "scripts": [
+    {
+      "src": "assets/js/runtime.js",
+      "module": true
+    }
+  ]
+}

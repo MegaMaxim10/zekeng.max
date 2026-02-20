@@ -8,7 +8,7 @@ You can embed tokens in string fields and they are resolved before validation/re
 
 ## `cfg`
 
-Read a value from merged framework config (`framework.config.json` + defaults).
+Read a value from merged framework config (`portfolio-config.json` + defaults).
 
 Syntax:
 
@@ -58,7 +58,7 @@ Examples:
 - `contact.officeLine()`
 
 Implementation location:
-- `scripts/content-resolver.js`
+- `scripts/builders/content-resolver.js`
 
 ## Resolution Rules
 
@@ -69,12 +69,12 @@ Implementation location:
 
 ## Where Resolution Happens
 
-- Validation: `scripts/validate-content.js`
-- Build: `scripts/build.js`
+- Validation: `scripts/builders/validate-content.js`
+- Build: `scripts/builders/build.js`
 
 Both use:
-- `scripts/framework-config.js` (config loading/merge)
-- `scripts/content-resolver.js` (token resolution)
+- `scripts/builders/portfolio-config.js` (config loading/merge)
+- `scripts/builders/content-resolver.js` (token resolution)
 
 ## Authoring Example
 
@@ -96,3 +96,4 @@ Both use:
   ]
 }
 ```
+

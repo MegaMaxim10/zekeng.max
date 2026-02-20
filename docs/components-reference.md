@@ -180,7 +180,7 @@ Purpose: embed HTML from file.
 {
   "type": "html-content",
   "data": {
-    "url": "content/carroussel.html"
+    "url": "src/content/carroussel.html"
   }
 }
 ```
@@ -256,3 +256,4 @@ Purpose: pull and render ORCID profile sections.
 1. Use `style` to apply page-specific custom classes without editing framework CSS.
 2. Use `cfg`/`hook` tokens to avoid duplicating contact/profile data in multiple pages.
 3. Validate content with `npm run validate:content` after block edits.
+

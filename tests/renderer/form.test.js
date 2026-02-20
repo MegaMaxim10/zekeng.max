@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderForm } from "../../src/js/components/form.js";
+import { renderForm } from "../../scripts/core/components/form.js";
 
 describe("renderForm", () => {
     it("renders a form", () => {
@@ -32,3 +32,4 @@ describe("renderForm", () => {
         expect(html).toContain('data-error-required="Email is required."');
     });
 });
+

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderCardGrid } from "../../src/js/components/card-grid";
+import { renderCardGrid } from "../../scripts/core/components/card-grid";
 
 describe("renderCardGrid", () => {
     it("renders a card grid block", () => {
@@ -19,3 +19,4 @@ describe("renderCardGrid", () => {
         expect(html).toContain("Card B");
     });
 });
+

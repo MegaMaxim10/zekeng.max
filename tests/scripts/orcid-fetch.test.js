@@ -3,7 +3,7 @@ import {
   filterWorksByType,
   sortWorks,
   enrichWorks
-} from "../../src/js/utils/orcid-fetch.js";
+} from "../../scripts/core/utils/orcid-fetch.js";
 
 describe("ORCID Fetch Module", () => {
   describe("filterWorksByType", () => {
@@ -118,3 +118,5 @@ describe("ORCID Fetch Module", () => {
     });
   });
 });
+
+

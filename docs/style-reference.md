@@ -90,7 +90,7 @@ This file lists stable CSS hooks intended for customization.
 
 Preferred approach:
 1. add custom class names with block/page `style` or `presentation.bodyClass`
-2. target those classes in `src/css/custom/*.css`
+2. target those classes in `src/css/custom.css` or additional files under `src/css/`
 
 Avoid direct edits to framework selectors unless you are evolving framework behavior.
 

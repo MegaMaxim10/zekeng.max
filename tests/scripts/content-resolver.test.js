@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveContentConfigReferences } from "../../scripts/content-resolver.js";
+import { resolveContentConfigReferences } from "../../scripts/builders/content-resolver.js";
 
 const config = {
   site: {
@@ -45,3 +45,5 @@ describe("content resolver", () => {
     expect(resolved.social).toBe("https://github.com/example");
   });
 });
+
+

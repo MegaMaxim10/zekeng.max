@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderLinkGroups } from "../../src/js/components/link-groups.js";
+import { renderLinkGroups } from "../../scripts/core/components/link-groups.js";
 
 describe("renderLinkGroups", () => {
   it("renders grouped links with icons", () => {
@@ -26,3 +26,4 @@ describe("renderLinkGroups", () => {
     expect(html).toContain("link-groups-icon");
   });
 });
+

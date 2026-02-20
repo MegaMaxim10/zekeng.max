@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildSiteGraph, urlFor } from "../../scripts/site-graph.js";
+import { buildSiteGraph, urlFor } from "../../scripts/builders/site-graph.js";
 import { pages } from "../fixtures/site.nested.js";
 
 describe("urlFor()", () => {
@@ -21,3 +21,5 @@ describe("urlFor()", () => {
       .toBe("/my-site/teaching/index.html");
   });
 });
+
+

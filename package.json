@@ -6,8 +6,9 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "validate:content": "node scripts/validate-content.js",
-    "build": "node scripts/build.js",
+    "validate:content": "node scripts/builders/validate-content.js",
+    "build": "node scripts/builders/build.js",
+    "verify": "npm run validate-test-and-build",
     "validate-test-and-build": "npm run validate:content && npm run test && npm run build"
   },
   "repository": {

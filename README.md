@@ -13,14 +13,14 @@ It converts structured JSON content into production-ready static HTML/CSS/JS, wi
 
 This project is a static site framework, not a theme-only starter.
 
-You define content as JSON files in `content/`.  
+You define content as JSON files in `src/content/`.  
 The build system validates JSON against `schemas/page.schema.json`, renders component blocks, applies templates, copies assets, and minifies output into `public/`.
 
 ## Core Principles
 
 1. Content-first: content is data (`.json`) and validated before build.
-2. Declarative presentation: templates/styles/scripts are selected in config, not hardcoded per page.
-3. Framework vs custom separation: reusable framework logic stays in `src/js/framework`; developer-specific logic stays in `src/js/custom`.
+2. Declarative presentation: named template bundles (html/css/js) are selected in config, not hardcoded per page.
+3. Framework vs custom separation: reusable framework logic lives in `scripts/core`; developer-specific logic lives in `src/css` and `src/js`.
 
 ## Quick Start
 
@@ -46,19 +46,19 @@ npm test
 # build site into public/
 npm run build
 
-# full pipeline
-npm run validate-test-and-build
+# full verification pipeline
+npm run verify
 ```
 
 Open `public/index.html` after build.
 
 ## Build Pipeline
 
-1. Load and merge `framework.config.json` with framework defaults.
+1. Load and merge `portfolio-config.json` with framework defaults.
 2. Resolve content references (`{{cfg:...}}`, `{{hook:...}}`) in page JSON.
 3. Validate resolved content against `schemas/page.schema.json`.
-4. Build site graph from `content/` directory structure.
-5. Render page blocks via component renderers in `src/js/components/`.
+4. Build site graph from `src/content/` directory structure.
+5. Render page blocks via component renderers in `scripts/core/components/`.
 6. Apply selected template and inject navigation/breadcrumb/related links.
 7. Generate SEO/social tags and structured data.
 8. Copy static assets and framework/custom scripts.
@@ -67,32 +67,29 @@ Open `public/index.html` after build.
 ## Project Structure
 
 ```text
-content/                    Page content JSON
+templates/                  Named template folders with template-config.json
 schemas/                    JSON schema definitions
 scripts/                    Build pipeline modules
+  builders/                 Build orchestration, config, navigation, graph
+  core/                     Renderers, block processors, reusable core logic
 src/
-  css/                      Framework styles
-  js/
-    components/             Block renderers (paragraph, form, map, ...)
-    framework/              Framework runtime behavior modules
-    custom/                 Developer-owned runtime hooks
-    renderer.js             Block dispatch and page rendering
-  templates/                HTML templates
-assets/                     Static images/documents/icons
+  content/                  Page content JSON
+  assets/                   Static images/documents/icons
+  css/                      Developer custom styles (includes custom.css)
+  js/                       Developer custom scripts (includes custom.js)
 public/                     Build output
-framework.config.json       Main framework customization file
+portfolio-config.json       Main framework customization file
 ```
 
 ## Configuration Overview
 
-Main configuration file: `framework.config.json`
+Main configuration file: `portfolio-config.json`
 
 Top-level sections:
-- `site`: site title, author, contact/social metadata used by build and footer.
-- `templates`: template references and named entries.
-- `styles`: style profiles and default profile.
-- `scripts`: default scripts (supports classic and ES module entries).
-- `seo`: global SEO/social defaults.
+- `site`: site title, branding, author, contact/social metadata used by build and footer.
+- `templates`: default template selection.
+- `custom` (optional): global custom styles/scripts loaded for all pages.
+- `seo` (optional): global SEO/social defaults.
 
 See:
 - `docs/templating-and-styling.md`
@@ -132,18 +129,18 @@ Supported block types are documented in detail in `docs/components-reference.md`
 
 Content JSON can reference configuration values and computed values:
 
-- `{{cfg:site.contact.fullName}}` -> reads directly from `framework.config.json`
+- `{{cfg:site.contact.fullName}}` -> reads directly from `portfolio-config.json`
 - `{{hook:contact.phoneTelUrl(0)}}` -> resolves through framework hooks
 
 Resolution happens before validation and rendering, so referenced values behave like normal JSON content values.
 
 ## Framework Runtime vs Custom Runtime
 
-Framework runtime entry:
-- `src/js/framework/runtime.js`
+Framework runtime entry (template-owned):
+- `templates/default/assets/js/runtime.js`
 
 Developer runtime entry:
-- `src/js/custom/global.js`
+- `src/js/custom.js`
 
 By default, both are loaded. Framework code handles reusable behavior (theme/nav/form/dialog/etc).  
 Developer code should only contain project-specific behavior.

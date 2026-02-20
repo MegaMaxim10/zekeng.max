@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderOrcid } from "../../src/js/components/orcid.js";
+import { renderOrcid } from "../../scripts/core/components/orcid.js";
 
 describe("renderOrcid", () => {
   it("renders a basic orcid block with no data", () => {
@@ -371,3 +371,4 @@ describe("renderOrcid", () => {
     expect(html).toContain("ORCID Profile");
   });
 });
+

@@ -7,56 +7,21 @@
     "genRelatedPages": true
   },
   "header": {
-    "title": "Research Activities",
-    "lead": "My research explores the foundations and applications of software engineering."
+    "title": "Research",
+    "lead": "Research themes, projects, and outputs."
   },
   "body": [
     {
       "type": "heading",
-      "data": { "level": 2, "text": "Research Interests" }
-    },
-    {
-      "type": "list",
       "data": {
-        "items": [
-          "Software Engineering",
-          "Workflow Systems",
-          "Formal Languages"
-        ]
+        "level": 2,
+        "text": "Research Overview"
       }
     },
     {
-      "type": "timeline",
+      "type": "paragraph",
       "data": {
-        "items": [
-          {
-            "period": "2019 – Today",
-            "title": "Research Fellow",
-            "description": "FUCHSIA Team (INRIA/LIRIMA)"
-          }
-        ]
-      }
-    },
-    {
-      "type": "heading",
-      "data": { "level": 2, "text": "Education & Qualifications" }
-    },
-    {
-      "type": "orcid",
-      "data": {
-        "orcidId": "0000-0002-0417-5591",
-        "sections": ["education"]
-      }
-    },
-    {
-      "type": "heading",
-      "data": { "level": 2, "text": "Employment History" }
-    },
-    {
-      "type": "orcid",
-      "data": {
-        "orcidId": "0000-0002-0417-5591",
-        "sections": ["employment"]
+        "text": "This page is currently under construction. More content will be available soon."
       }
     }
   ]

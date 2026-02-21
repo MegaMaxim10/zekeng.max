@@ -1,40 +1,27 @@
 {
   "meta": {
-    "id": "research",
-    "title": "Research",
+    "id": "news",
+    "title": "News",
     "language": "en",
     "version": "1.0",
     "genSubMenus": false
   },
   "header": {
-    "title": "Research Activities",
-    "lead": "My research explores the foundations and applications of software engineering."
+    "title": "News",
+    "lead": "Announcements, milestones, and recent updates."
   },
   "body": [
     {
       "type": "heading",
-      "data": { "level": 2, "text": "Research Interests" }
-    },
-    {
-      "type": "list",
       "data": {
-        "items": [
-          "Software Engineering",
-          "Workflow Systems",
-          "Formal Languages"
-        ]
+        "level": 2,
+        "text": "News"
       }
     },
     {
-      "type": "timeline",
+      "type": "paragraph",
       "data": {
-        "items": [
-          {
-            "period": "2019 – Today",
-            "title": "Research Fellow",
-            "description": "FUCHSIA Team (INRIA/LIRIMA)"
-          }
-        ]
+        "text": "This page is currently under construction. More content will be available soon."
       }
     }
   ]

@@ -52,13 +52,13 @@ Examples:
 - `contact.emailMailto(kind,index)`
 - `contact.socialUrl(key)`
 - `contact.socialLabel(key)`
-- `contact.osmEmbedUrl()`
-- `contact.osmLinkUrl()`
 - `contact.profileLine()`
 - `contact.officeLine()`
 
 Implementation location:
 - `scripts/builders/content-resolver.js`
+
+Note: component-specific derivations are handled inside components (for example map URL generation in `scripts/core/components/map.js`), not as global hooks.
 
 ## Resolution Rules
 

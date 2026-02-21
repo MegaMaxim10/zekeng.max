@@ -126,20 +126,6 @@ function buildHooks(frameworkConfig) {
       const item = socials.find((it) => String(it.key) === String(key));
       return item?.label || "";
     },
-    "contact.osmEmbedUrl": () => {
-      const lat = Number(coordinates.latitude || 0);
-      const lon = Number(coordinates.longitude || 0);
-      const minLon = (lon - 0.002275).toFixed(6);
-      const minLat = (lat - 0.001299).toFixed(6);
-      const maxLon = (lon + 0.002325).toFixed(6);
-      const maxLat = (lat + 0.001301).toFixed(6);
-      return `https://www.openstreetmap.org/export/embed.html?bbox=${minLon}%2C${minLat}%2C${maxLon}%2C${maxLat}&layer=mapnik&marker=${lat}%2C${lon}`;
-    },
-    "contact.osmLinkUrl": () => {
-      const lat = Number(coordinates.latitude || 0);
-      const lon = Number(coordinates.longitude || 0);
-      return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
-    },
     "contact.profileLine": () => {
       return [contact.role, contact.institution, contact.department, contact.postalAddress]
         .filter(Boolean)

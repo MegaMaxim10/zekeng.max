@@ -30,8 +30,6 @@
       "data": {
         "provider": "openstreetmap",
         "title": "Office location map",
-        "embedUrl": "{{hook:contact.osmEmbedUrl}}",
-        "linkUrl": "{{hook:contact.osmLinkUrl}}",
         "address": "{{cfg:site.contact.office}}",
         "latitude": "{{cfg:site.contact.coordinates.latitude}}",
         "longitude": "{{cfg:site.contact.coordinates.longitude}}",

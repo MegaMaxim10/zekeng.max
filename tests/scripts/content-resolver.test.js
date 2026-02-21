@@ -27,22 +27,22 @@ describe("content resolver", () => {
     const input = {
       text: "{{cfg:site.contact.role}} at {{cfg:site.contact.institution}}",
       map: {
-        latitude: "{{cfg:site.contact.coordinates.latitude}}",
-        link: "{{hook:contact.osmLinkUrl}}"
+        latitude: "{{cfg:site.contact.coordinates.latitude}}"
       },
       phoneLabel: "{{hook:contact.phoneDisplay(0)}}",
       phoneUrl: "{{hook:contact.phoneTelUrl(0)}}",
       mailto: "{{hook:contact.emailMailto(institutional)}}",
-      social: "{{hook:contact.socialUrl(github)}}"
+      social: "{{hook:contact.socialUrl(github)}}",
+      profile: "{{hook:contact.profileLine}}"
     };
 
     const resolved = resolveContentConfigReferences(input, config);
     expect(resolved.text).toContain("Senior Lecturer/Researcher");
     expect(resolved.map.latitude).toBe(5.438799);
-    expect(String(resolved.map.link)).toContain("openstreetmap.org");
     expect(resolved.phoneUrl).toBe("tel:+237674965370");
     expect(resolved.mailto).toBe("mailto:ndadji.maxime@univ-dschang.org");
     expect(resolved.social).toBe("https://github.com/example");
+    expect(resolved.profile).toContain("University of Dschang");
   });
 });
 

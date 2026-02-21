@@ -195,8 +195,6 @@ Purpose: embeddable location map with metadata.
   "data": {
     "title": "Office map",
     "provider": "openstreetmap",
-    "embedUrl": "https://www.openstreetmap.org/export/embed.html?...",
-    "linkUrl": "https://www.openstreetmap.org/?mlat=...&mlon=...",
     "address": "Campus C, Faculty of Science",
     "latitude": 5.438799,
     "longitude": 10.071175,
@@ -204,6 +202,9 @@ Purpose: embeddable location map with metadata.
   }
 }
 ```
+
+`embedUrl` and `linkUrl` are optional overrides.  
+If omitted, they are derived from `provider` + `latitude` + `longitude`.
 
 ## `link-groups`
 

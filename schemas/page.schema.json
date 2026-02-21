@@ -374,7 +374,6 @@
             "type": { "const": "map" },
             "data": {
               "type": "object",
-              "required": ["embedUrl"],
               "properties": {
                 "title": { "type": "string" },
                 "provider": { "type": "string" },
@@ -385,6 +384,22 @@
                 "longitude": { "type": "number" },
                 "height": { "type": "integer", "minimum": 220, "maximum": 900 }
               },
+              "anyOf": [
+                {
+                  "required": ["embedUrl"],
+                  "properties": {
+                    "embedUrl": { "type": "string", "format": "uri" }
+                  }
+                },
+                {
+                  "required": ["provider", "latitude", "longitude"],
+                  "properties": {
+                    "provider": { "type": "string" },
+                    "latitude": { "type": "number" },
+                    "longitude": { "type": "number" }
+                  }
+                }
+              ],
               "additionalProperties": false
             }
           }

@@ -62,7 +62,12 @@ export { preprocessPage, preprocessBlock, blockProcessors };
 
 function nestedBlocks(block) {
   if (block?.type === "layout-row") {
-    const components = block?.data?.components;
+    const data = block?.data || {};
+    if (Array.isArray(data.rows) && data.rows.length > 0) {
+      return data.rows
+        .flatMap((row) => (Array.isArray(row?.components) ? row.components : []));
+    }
+    const components = data.components;
     return Array.isArray(components) ? components : [];
   }
   return [];

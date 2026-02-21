@@ -88,6 +88,10 @@ Purpose: explicit CTA link.
 }
 ```
 
+Notes:
+- `url` accepts URI references (absolute URLs, `mailto:`, `tel:`, or relative paths).
+- For relative links, prefer `{{hook:url.resolve(...)}}`.
+
 ## `card-grid`
 
 Purpose: responsive cards.
@@ -185,6 +189,44 @@ Purpose: embed HTML from file.
 }
 ```
 
+## `feature-image`
+
+Purpose: render a single feature image with configurable shape, shadow, load animation, and click-to-zoom.
+
+```json
+{
+  "type": "feature-image",
+  "data": {
+    "src": "src/assets/images/profile/zekeng.jpeg",
+    "alt": "Profile portrait",
+    "shape": "circle",
+    "shadow": true,
+    "loadEffect": "slide-ltr",
+    "zoom": true
+  }
+}
+```
+
+Compatibility note:
+- Legacy `type: "profile-image"` is still accepted.
+
+Supported `shape` values:
+- `square`
+- `rounded`
+- `circle`
+- `octagon`
+- `hexagon`
+- `diamond`
+
+Supported `loadEffect` values:
+- `none`
+- `slide-ltr`
+- `slide-rtl`
+- `slide-ttb`
+- `slide-btt`
+- `fade-in`
+- `blink`
+
 ## `map`
 
 Purpose: embeddable location map with metadata.
@@ -208,30 +250,54 @@ If omitted, they are derived from `provider` + `latitude` + `longitude`.
 
 ## `layout-row`
 
-Purpose: render 1 to 6 components on the same row with optional width ratios.
+Purpose: render one or more rows, each containing 1 to 6 components with optional width ratios.
 
 ```json
 {
   "type": "layout-row",
   "data": {
-    "components": [
+    "rows": [
       {
-        "type": "paragraph",
-        "data": { "text": "Left column" }
+        "components": [
+          {
+            "type": "feature-image",
+            "data": {
+              "src": "src/assets/images/profile/zekeng.jpeg",
+              "shape": "circle"
+            }
+          },
+          {
+            "type": "layout-row",
+            "data": {
+              "rows": [
+                {
+                  "components": [
+                    { "type": "paragraph", "data": { "text": "Nested row content" } }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "widths": [35, 65]
       },
       {
-        "type": "list",
-        "data": { "items": ["Item A", "Item B"] }
+        "components": [
+          {
+            "type": "paragraph",
+            "data": { "text": "Second row below the first row" }
+          }
+        ]
       }
-    ],
-    "widths": [75, 25]
+    ]
   }
 }
 ```
 
 Notes:
-- `components`: array of child blocks (`min: 1`, `max: 6`).
-- `widths` is optional.
+- Backward-compatible single-row form is still supported with top-level `components` + `widths`.
+- New multi-row form uses `rows[]`, each row having its own `components` and optional `widths`.
+- A `layout-row` can now be nested inside another `layout-row`.
 - default widths are equal (`2 -> 50/50`, `3 -> 33.33/33.33/33.33`, etc).
 - widths accept numbers or percentage strings and are normalized to 100 (`[3,1]` becomes `75/25`).
 
@@ -261,6 +327,11 @@ Purpose: categorized multi-column links with optional icons.
   }
 }
 ```
+
+Notes:
+- `links[].url` accepts URI references.
+- For content-level relative links, you can use `{{hook:url.resolve(...)}}`.
+- Built-in icon keys include `phone`, `email`, `whatsapp`, `contact`, `github`, `linkedin`, `x`, `researchgate`, `orcid`, `googlescholar`, `link`.
 
 ## `orcid`
 

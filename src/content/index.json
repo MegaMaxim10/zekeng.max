@@ -5,22 +5,109 @@
     "language": "en",
     "version": "1.0"
   },
-  "header": {
-    "title": "Home",
-    "lead": "Overview of the portfolio sections and recent updates."
-  },
   "body": [
     {
-      "type": "heading",
+      "type": "layout-row",
+      "style": ["home-hero-row"],
       "data": {
-        "level": 2,
-        "text": "Welcome"
-      }
-    },
-    {
-      "type": "paragraph",
-      "data": {
-        "text": "This page is currently under construction. More content will be available soon."
+        "widths": [38, 62],
+        "components": [
+          {
+            "type": "feature-image",
+            "style": ["home-feature-image"],
+            "data": {
+              "src": "src/assets/images/profile/zekeng.jpeg",
+              "alt": "Portrait of ZEKENG NDADJI Milliam Maxime",
+              "shape": "circle",
+              "shadow": false,
+              "loadEffect": "slide-ltr",
+              "zoom": true
+            }
+          },
+          {
+            "type": "layout-row",
+            "style": ["home-intro-stack"],
+            "data": {
+              "rows": [
+                {
+                  "components": [
+                    {
+                      "type": "paragraph",
+                      "style": ["home-name"],
+                      "data": {
+                        "text": "Dr ZEKENG NDADJI Milliam Maxime"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "components": [
+                    {
+                      "type": "paragraph",
+                      "style": ["home-role"],
+                      "data": {
+                        "text": "Senior Lecturer and Researcher"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "components": [
+                    {
+                      "type": "paragraph",
+                      "style": ["home-welcome"],
+                      "data": {
+                        "text": "Welcome to my portfolio. Explore my teaching, research, consulting, and other activities."
+                      }
+                    }
+                  ]
+                },
+                {
+                  "components": [
+                    {
+                      "type": "link-groups",
+                      "style": ["home-quick-actions"],
+                      "data": {
+                        "columns": 1,
+                        "groups": [
+                          {
+                            "title": "Quick actions",
+                            "links": [
+                              {
+                                "label": "Call",
+                                "url": "{{hook:contact.phoneTelUrl(0)}}",
+                                "external": false,
+                                "icon": "phone"
+                              },
+                              {
+                                "label": "Email",
+                                "url": "{{hook:contact.emailMailto(institutional)}}",
+                                "external": false,
+                                "icon": "email"
+                              },
+                              {
+                                "label": "WhatsApp",
+                                "url": "{{hook:contact.whatsappUrl(0)}}",
+                                "external": true,
+                                "icon": "whatsapp"
+                              },
+                              {
+                                "label": "Contact page",
+                                "url": "{{hook:url.resolve(6-contact/contact.html)}}",
+                                "external": false,
+                                "icon": "contact"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   ]

@@ -1,4 +1,5 @@
 const TOKEN_REGEX = /{{\s*(cfg|hook):([^}]+)\s*}}/g;
+const ABSOLUTE_URL_REGEX = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
 
 export function resolveContentConfigReferences(input, frameworkConfig) {
   return resolveNode(input, frameworkConfig);
@@ -108,6 +109,7 @@ function buildHooks(frameworkConfig) {
   const toPhoneRaw = (index = 0) => String((contact.phones || [])[Number(index)] || "").replace(/\s+/g, "");
 
   return {
+    "url.resolve": (path) => resolveRelativeUrl(path),
     "contact.phoneDisplay": (index = 0) => String((contact.phones || [])[Number(index)] || ""),
     "contact.phoneTelUrl": (index = 0) => `tel:${toPhoneRaw(index)}`,
     "contact.whatsappUrl": (index = 0) => `https://wa.me/${toPhoneRaw(index).replace(/^\+/, "")}`,
@@ -136,4 +138,25 @@ function buildHooks(frameworkConfig) {
       return [contact.office, coords ? `Coordinates: ${coords}` : ""].filter(Boolean).join(". ");
     }
   };
+}
+
+function resolveRelativeUrl(path) {
+  const value = String(path || "").trim();
+  if (!value) {
+    return "";
+  }
+
+  if (value.startsWith("{{")) {
+    return value;
+  }
+
+  if (value.startsWith("//") || value.startsWith("#") || ABSOLUTE_URL_REGEX.test(value)) {
+    return value;
+  }
+
+  const normalized = value
+    .replace(/^\.\//, "")
+    .replace(/^\/+/, "");
+
+  return `{{basePath}}/${normalized}`;
 }

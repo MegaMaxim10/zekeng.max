@@ -37,6 +37,7 @@ Syntax:
 Examples:
 
 ```text
+{{hook:url.resolve(6-contact/contact.html)}}
 {{hook:contact.phoneDisplay(0)}}
 {{hook:contact.phoneTelUrl(0)}}
 {{hook:contact.whatsappUrl(0)}}
@@ -46,6 +47,7 @@ Examples:
 
 ## Current Built-In Hooks
 
+- `url.resolve(path)`
 - `contact.phoneDisplay(index)`
 - `contact.phoneTelUrl(index)`
 - `contact.whatsappUrl(index)`
@@ -59,6 +61,14 @@ Implementation location:
 - `scripts/builders/content-resolver.js`
 
 Note: component-specific derivations are handled inside components (for example map URL generation in `scripts/core/components/map.js`), not as global hooks.
+
+### `url.resolve(path)` behavior
+
+- keeps absolute URLs unchanged (`https://...`, `mailto:...`, `tel:...`, etc)
+- keeps hash links unchanged (`#section`)
+- converts relative paths to framework-safe base-path form
+  - input: `6-contact/contact.html`
+  - output: `{{basePath}}/6-contact/contact.html`
 
 ## Resolution Rules
 

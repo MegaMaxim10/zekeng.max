@@ -112,6 +112,9 @@ body {
 .related-pages,
 .site-footer {
     position: relative;
+}
+
+.site-header {
     z-index: 1;
 }
 

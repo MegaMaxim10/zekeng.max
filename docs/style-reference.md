@@ -48,6 +48,7 @@ This file lists stable CSS hooks intended for customization.
 - `.block-map`
 - `.block-link-groups`
 - `.block-layout-row`
+- `.block-feature-image`
 
 ## Form System
 
@@ -85,9 +86,24 @@ This file lists stable CSS hooks intended for customization.
 - `.link-group`
 - `.link-groups-list`
 - `.link-groups-link`
+- `.link-groups-label`
 - `.link-groups-icon`
 - `.layout-row`
+- `.layout-row-line`
 - `.layout-row-item`
+- `.feature-image`
+- `.feature-image-frame`
+- `.feature-image-zoom-overlay`
+
+## Home Page (Current Composition)
+
+- `.home-hero-row`
+- `.home-intro-stack`
+- `.home-feature-image`
+- `.home-name`
+- `.home-role`
+- `.home-welcome`
+- `.home-quick-actions`
 
 ## Extension Rule
 

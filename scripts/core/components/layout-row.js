@@ -7,8 +7,25 @@ export function renderLayoutRow(block, renderNestedBlock) {
     throw new Error("layout-row renderer requires a nested block renderer function");
   }
 
-  const data = block.data || {};
-  const components = Array.isArray(data.components) ? data.components : [];
+  const rows = normalizeRows(block.data || {});
+  if (rows.length === 0) {
+    return "";
+  }
+  const classes = ["layout-row", "block-layout-row", renderStyles(block)].filter(Boolean).join(" ");
+
+  const rowsHtml = rows
+    .map((row, rowIndex) => renderRow(row, rowIndex, renderNestedBlock))
+    .join("");
+
+  return `
+    <section class="${classes}" data-rows="${rows.length}">
+      ${rowsHtml}
+    </section>
+  `;
+}
+
+function renderRow(row, rowIndex, renderNestedBlock) {
+  const components = Array.isArray(row.components) ? row.components : [];
   if (components.length === 0) {
     return "";
   }
@@ -16,9 +33,7 @@ export function renderLayoutRow(block, renderNestedBlock) {
     throw new Error(`layout-row supports at most ${MAX_COMPONENTS_PER_ROW} components per row`);
   }
 
-  const widths = resolveColumnWidths(data.widths, components.length);
-  const classes = ["layout-row", "block-layout-row", renderStyles(block)].filter(Boolean).join(" ");
-
+  const widths = resolveColumnWidths(row.widths, components.length);
   const cellsHtml = components
     .map((component, index) => {
       const width = widths[index];
@@ -31,10 +46,29 @@ export function renderLayoutRow(block, renderNestedBlock) {
     .join("");
 
   return `
-    <section class="${classes}" data-columns="${components.length}">
+    <div class="layout-row-line" data-row="${rowIndex + 1}" data-columns="${components.length}">
       ${cellsHtml}
-    </section>
+    </div>
   `;
+}
+
+function normalizeRows(data) {
+  if (Array.isArray(data.rows) && data.rows.length > 0) {
+    return data.rows
+      .filter((row) => row && typeof row === "object")
+      .map((row) => ({
+        components: Array.isArray(row.components) ? row.components : [],
+        widths: row.widths
+      }))
+      .filter((row) => row.components.length > 0);
+  }
+
+  const components = Array.isArray(data.components) ? data.components : [];
+  if (components.length === 0) {
+    return [];
+  }
+
+  return [{ components, widths: data.widths }];
 }
 
 function resolveColumnWidths(widths, componentCount) {

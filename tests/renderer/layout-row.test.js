@@ -21,6 +21,7 @@ describe("layout-row", () => {
 
     const html = renderPage(page);
     expect(html).toContain('class="layout-row block-layout-row"');
+    expect(html).toContain('data-rows="1"');
     expect(html).toContain('data-columns="3"');
     expect(html).toContain("flex-basis: 33.3333%");
     expect(html).toContain("Column A");
@@ -50,6 +51,72 @@ describe("layout-row", () => {
     expect(html).toContain("flex-basis: 25%");
   });
 
+  it("renders multiple rows when data.rows is provided", () => {
+    const page = {
+      meta: { id: "layout-row-rows", title: "Layout Row Rows", language: "en" },
+      body: [
+        {
+          type: "layout-row",
+          data: {
+            rows: [
+              {
+                widths: [2, 1],
+                components: [
+                  { type: "paragraph", data: { text: "Row 1A" } },
+                  { type: "paragraph", data: { text: "Row 1B" } }
+                ]
+              },
+              {
+                components: [
+                  { type: "paragraph", data: { text: "Row 2" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    const html = renderPage(page);
+    expect(html).toContain('data-rows="2"');
+    expect(html).toContain('data-row="1"');
+    expect(html).toContain('data-row="2"');
+    expect(html).toContain("Row 1A");
+    expect(html).toContain("Row 2");
+  });
+
+  it("supports nested layout rows", () => {
+    const page = {
+      meta: { id: "layout-row-nested", title: "Layout Row Nested", language: "en" },
+      body: [
+        {
+          type: "layout-row",
+          data: {
+            components: [
+              { type: "paragraph", data: { text: "Top Left" } },
+              {
+                type: "layout-row",
+                data: {
+                  rows: [
+                    {
+                      components: [
+                        { type: "paragraph", data: { text: "Nested Item" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    const html = renderPage(page);
+    expect(html).toContain("Top Left");
+    expect(html).toContain("Nested Item");
+  });
+
   it("rejects rows with more than six components", () => {
     const page = {
       meta: { id: "layout-row-limit", title: "Layout Row Limit", language: "en" },
@@ -72,5 +139,29 @@ describe("layout-row", () => {
     };
 
     expect(() => renderPage(page)).toThrow("at most 6 components");
+  });
+
+  it("rejects row widths when count does not match components", () => {
+    const page = {
+      meta: { id: "layout-row-bad-widths", title: "Layout Row Bad Widths", language: "en" },
+      body: [
+        {
+          type: "layout-row",
+          data: {
+            rows: [
+              {
+                widths: [1, 1, 1],
+                components: [
+                  { type: "paragraph", data: { text: "A" } },
+                  { type: "paragraph", data: { text: "B" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    expect(() => renderPage(page)).toThrow("must match components length");
   });
 });

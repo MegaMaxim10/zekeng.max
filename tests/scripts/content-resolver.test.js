@@ -33,7 +33,9 @@ describe("content resolver", () => {
       phoneUrl: "{{hook:contact.phoneTelUrl(0)}}",
       mailto: "{{hook:contact.emailMailto(institutional)}}",
       social: "{{hook:contact.socialUrl(github)}}",
-      profile: "{{hook:contact.profileLine}}"
+      profile: "{{hook:contact.profileLine}}",
+      relativeUrl: "{{hook:url.resolve(6-contact/contact.html)}}",
+      absoluteUrl: "{{hook:url.resolve(https://example.org/path)}}"
     };
 
     const resolved = resolveContentConfigReferences(input, config);
@@ -43,6 +45,8 @@ describe("content resolver", () => {
     expect(resolved.mailto).toBe("mailto:ndadji.maxime@univ-dschang.org");
     expect(resolved.social).toBe("https://github.com/example");
     expect(resolved.profile).toContain("University of Dschang");
+    expect(resolved.relativeUrl).toBe("{{basePath}}/6-contact/contact.html");
+    expect(resolved.absoluteUrl).toBe("https://example.org/path");
   });
 });
 

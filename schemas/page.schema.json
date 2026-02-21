@@ -214,7 +214,13 @@
               "required": ["label", "url"],
               "properties": {
                 "label": { "type": "string" },
-                "url": { "type": "string", "format": "uri" },
+                "url": {
+                  "type": "string",
+                  "oneOf": [
+                    { "format": "uri-reference" },
+                    { "pattern": "^\\{\\{basePath\\}\\}/.+" }
+                  ]
+                },
                 "external": { "type": "boolean" }
               },
               "additionalProperties": false
@@ -365,6 +371,37 @@
         }
       ]
     },
+    "profileImageBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "enum": ["feature-image", "profile-image"] },
+            "data": {
+              "type": "object",
+              "required": ["src"],
+              "properties": {
+                "src": { "type": "string" },
+                "alt": { "type": "string" },
+                "shape": {
+                  "type": "string",
+                  "enum": ["square", "rounded", "circle", "octagon", "hexagon", "diamond"]
+                },
+                "shadow": { "type": "boolean" },
+                "loadEffect": {
+                  "type": "string",
+                  "enum": ["none", "slide-ltr", "slide-rtl", "slide-ttb", "slide-btt", "fade-in", "blink"]
+                },
+                "zoom": { "type": "boolean" },
+                "size": { "type": "number", "exclusiveMinimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
     "mapBlock": {
       "allOf": [
         { "$ref": "#/$defs/blockBase" },
@@ -417,7 +454,9 @@
         { "$ref": "#/$defs/assetBlock" },
         { "$ref": "#/$defs/formBlock" },
         { "$ref": "#/$defs/htmlContentBlock" },
+        { "$ref": "#/$defs/profileImageBlock" },
         { "$ref": "#/$defs/mapBlock" },
+        { "$ref": "#/$defs/layoutRowBlock" },
         { "$ref": "#/$defs/linkGroupsBlock" },
         { "$ref": "#/$defs/orcidBlock" }
       ]
@@ -431,13 +470,40 @@
             "type": { "const": "layout-row" },
             "data": {
               "type": "object",
-              "required": ["components"],
               "properties": {
                 "components": {
                   "type": "array",
                   "minItems": 1,
                   "maxItems": 6,
                   "items": { "$ref": "#/$defs/rowItemBlock" }
+                },
+                "rows": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["components"],
+                    "properties": {
+                      "components": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 6,
+                        "items": { "$ref": "#/$defs/rowItemBlock" }
+                      },
+                      "widths": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 6,
+                        "items": {
+                          "oneOf": [
+                            { "type": "number", "exclusiveMinimum": 0 },
+                            { "type": "string", "pattern": "^\\s*\\d+(\\.\\d+)?\\s*%?\\s*$" }
+                          ]
+                        }
+                      }
+                    },
+                    "additionalProperties": false
+                  }
                 },
                 "widths": {
                   "type": "array",
@@ -451,6 +517,20 @@
                   }
                 }
               },
+              "anyOf": [
+                {
+                  "required": ["components"],
+                  "properties": {
+                    "components": { "type": "array" }
+                  }
+                },
+                {
+                  "required": ["rows"],
+                  "properties": {
+                    "rows": { "type": "array" }
+                  }
+                }
+              ],
               "additionalProperties": false
             }
           }
@@ -486,7 +566,13 @@
                           "required": ["label", "url"],
                           "properties": {
                             "label": { "type": "string" },
-                            "url": { "type": "string", "format": "uri" },
+                            "url": {
+                              "type": "string",
+                              "oneOf": [
+                                { "format": "uri-reference" },
+                                { "pattern": "^\\{\\{basePath\\}\\}/.+" }
+                              ]
+                            },
                             "external": { "type": "boolean" },
                             "icon": { "type": "string" }
                           },
@@ -611,6 +697,7 @@
         { "$ref": "#/$defs/assetBlock" },
         { "$ref": "#/$defs/formBlock" },
         { "$ref": "#/$defs/htmlContentBlock" },
+        { "$ref": "#/$defs/profileImageBlock" },
         { "$ref": "#/$defs/mapBlock" },
         { "$ref": "#/$defs/layoutRowBlock" },
         { "$ref": "#/$defs/linkGroupsBlock" },

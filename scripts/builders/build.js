@@ -30,6 +30,9 @@ import { copyDir } from "./assets.js";
 const CONTENT_DIR = "src/content";
 const OUTPUT_DIR = "public";
 const TEMPLATE_ROOT_DIR = "templates";
+const CORE_RUNTIME_SOURCE_DIR = path.join("scripts", "core", "runtime");
+const CORE_RUNTIME_OUTPUT_DIR = path.join(OUTPUT_DIR, "assets", "core", "js");
+const CORE_RUNTIME_SCRIPTS = [{ src: "assets/core/js/runtime.js", module: true }];
 const BASE_PATH = process.env.BASE_PATH || "";
 
 const portfolioConfig = readPortfolioConfig();
@@ -222,6 +225,7 @@ function resolvePageAssets(pageJson) {
   const templateDefinition = resolveTemplateDefinition(presentation.template || null);
   const customStyles = Array.isArray(portfolioConfig.custom?.styles) ? portfolioConfig.custom.styles : [];
   const customScripts = Array.isArray(portfolioConfig.custom?.scripts) ? portfolioConfig.custom.scripts : [];
+  const coreRuntimeScripts = CORE_RUNTIME_SCRIPTS.map(normalizeScriptEntry);
 
   const templateStyleHrefs = (templateDefinition.styles || []).map((assetPath) =>
     normalizeTemplateAssetHref(templateDefinition, assetPath, "style")
@@ -240,6 +244,7 @@ function resolvePageAssets(pageJson) {
   ]);
 
   const scriptEntries = uniqueScriptEntries([
+    ...coreRuntimeScripts,
     ...baseScripts,
     ...globalCustomScripts,
     ...(presentation.extraScripts || []).map(normalizeScriptEntry)
@@ -261,6 +266,10 @@ function copyUsedTemplateAssets() {
     const destination = path.join(OUTPUT_DIR, "assets", "templates", templateName, "assets");
     copyDir(templateAssetsDir, destination);
   }
+}
+
+function copyCoreRuntimeAssets() {
+  copyDir(CORE_RUNTIME_SOURCE_DIR, CORE_RUNTIME_OUTPUT_DIR);
 }
 
 function extractAssetPathFromHref(href) {
@@ -305,7 +314,7 @@ function collectReferencedAssetsFromHtml(html) {
 
 function copyReferencedProjectAssets() {
   for (const assetPath of [...referencedPublicAssetPaths].sort()) {
-    if (assetPath.startsWith("assets/templates/")) {
+    if (assetPath.startsWith("assets/templates/") || assetPath.startsWith("assets/core/")) {
       continue;
     }
 
@@ -579,6 +588,7 @@ for (const page of pages) {
 
 console.log("Copying static assets...");
 copyUsedTemplateAssets();
+copyCoreRuntimeAssets();
 copyReferencedProjectAssets();
 console.log("Static assets copied");
 

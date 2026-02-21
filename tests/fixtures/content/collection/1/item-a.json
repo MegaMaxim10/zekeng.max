@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "id": "item-a",
+    "title": "Item A",
+    "description": "Published item summary",
+    "language": "en",
+    "status": "published",
+    "publishedTime": "2026-02-20T12:00:00Z",
+    "tags": ["alpha", "news"]
+  },
+  "body": [
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "First published item body."
+      }
+    }
+  ]
+}
+

@@ -1,26 +1,143 @@
 {
   "meta": {
     "id": "news-post-1",
-    "title": "News Post 1",
+    "title": "Seminar at Colibri-CRIC, Dschang (17 Feb 2026)",
+    "description": "I participated as ITASD vice-coordinator in a Colibri-CRIC seminar dedicated to research impact and artificial intelligence.",
+    "image": "assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/1.jpg",
     "language": "en",
-    "version": "1.0"
+    "version": "1.0",
+    "status": "published",
+    "slugFromTitle": true,
+    "publishedTime": "2026-02-19T10:00:00+01:00",
+    "lastUpdated": "2026-02-19",
+    "tags": [
+      "seminar",
+      "colibri-cric",
+      "itasd",
+      "artificial-intelligence"
+    ]
   },
   "header": {
-    "title": "News Post 1",
-    "lead": "A detailed update will be published here."
+    "title": "Seminar at Colibri-CRIC, Dschang",
+    "lead": "On 17 February 2026, I took part in a seminar hosted at the Colibri Research Center in Dschang, in my role as Vice-Coordinator of ITASD.",
+    "image": {
+      "src": "assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/2.jpg",
+      "alt": "Conference session at Colibri-CRIC in Dschang"
+    }
   },
   "body": [
     {
       "type": "heading",
       "data": {
         "level": 2,
-        "text": "News Post 1"
+        "text": "Seminar Summary"
       }
     },
     {
       "type": "paragraph",
       "data": {
-        "text": "This page is currently under construction. More content will be available soon."
+        "text": "On 17 February 2026, I joined a special seminar at the Colibri Research Center in Dschang, as [b]Vice-Coordinator of ITASD[/b]. The session addressed a practical question: how to transform research into [u]measurable impact[/u], with a focus on artificial intelligence."
+      }
+    },
+    {
+      "type": "table",
+      "data": {
+        "compact": true,
+        "headers": ["Item", "Details"],
+        "rows": [
+          ["Date", "17 February 2026"],
+          ["Venue", "Colibri Research Center, Dschang"],
+          ["My role", "Vice-Coordinator, ITASD"],
+          ["Theme", "Research impact and artificial intelligence"]
+        ]
+      }
+    },
+    {
+      "type": "media-image",
+      "data": {
+        "src": "src/assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/1.jpg",
+        "alt": "Seminar opening session at Colibri-CRIC",
+        "legend": "Opening discussion during the seminar at Colibri-CRIC (Dschang).",
+        "zoom": true
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "About Colibri-CRIC and ITASD"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "[color=#0d6adf][b]Colibri-CRIC[/b][/color] is a research and innovation ecosystem focused on creating solutions with social and economic value. [font=heading][b]ITASD[/b][/font], the Institute of Technology and Advanced Science for Sustainable Development, is one of the institutes within this ecosystem and hosted this seminar."
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "items": [
+          "[b]Mission alignment[/b]: connecting science, technology, and sustainable development priorities.",
+          "[b]Action orientation[/b]: encouraging outcomes that are useful for institutions, communities, and industry.",
+          "[b]Collaboration model[/b]: building bridges between research teams, practitioners, and decision-makers."
+        ]
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Key Learnings from the Seminar"
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "ordered": true,
+        "items": [
+          "Impact should be planned from project design, not only discussed at publication stage.",
+          "AI projects need clear problem framing, data quality discipline, and responsible governance.",
+          "Interdisciplinary collaboration is essential to move from prototypes to field-level adoption.",
+          "Evidence of value should combine scientific outputs with concrete societal or organizational outcomes."
+        ]
+      }
+    },
+    {
+      "type": "image-gallery",
+      "data": {
+        "title": "Seminar Photo Highlights",
+        "layout": "photomontage",
+        "zoom": true,
+        "carousel": true,
+        "images": [
+          {
+            "src": "src/assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/1.jpg",
+            "alt": "Speaker and audience during the seminar",
+            "caption": "Opening exchange with participants"
+          },
+          {
+            "src": "src/assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/2.jpg",
+            "alt": "Session view at Colibri-CRIC",
+            "caption": "Research and impact discussion"
+          },
+          {
+            "src": "src/assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/3.jpg",
+            "alt": "Participants engaged during seminar",
+            "caption": "Interactive seminar session"
+          },
+          {
+            "src": "src/assets/images/activities/cric-itasd-seminar-17022026-samuel-fosso-wamba/4.jpg",
+            "alt": "Closing seminar photo",
+            "caption": "Closing moments at ITASD / Colibri-CRIC"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "A fuller event recap is available in the Colibri-CRIC post: [Retour en images](https://colibri-cric.org/blog/2026/02/19/retour-en-images-sur-la-conference-speciale-faire-de-la-recherche-a-limpact-focus-sur-lintelligence-artificielle-animee-par-samuel-fosso-wamba/). This seminar was an important milestone for my engagement in impact-oriented research activities through ITASD."
       }
     }
   ]

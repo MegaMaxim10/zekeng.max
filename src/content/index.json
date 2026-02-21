@@ -109,6 +109,24 @@
           }
         ]
       }
+    },
+    {
+      "type": "content-carousel",
+      "style": ["home-latest-news"],
+      "data": {
+        "title": "Latest News",
+        "intro": "A quick view of my most recent updates.",
+        "source": "1-news",
+        "includeRootFiles": false,
+        "exclude": ["news.json"],
+        "publishedOnly": true,
+        "defaultSort": "date-desc",
+        "limit": 10,
+        "excerptLength": 140,
+        "cardMinWidth": 300,
+        "viewMoreUrl": "{{hook:url.resolve(1-news/news.html)}}",
+        "viewMoreLabel": "View all news"
+      }
     }
   ]
 }

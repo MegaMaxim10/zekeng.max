@@ -1,20 +1,17 @@
 import { initThemeToggle } from "./components/theme.js";
 import { initMobileNav, initActiveLinks } from "./components/navigation.js";
 import { initHeaderOffset, mountPassionDecor } from "./components/layout.js";
-import { initFormValidation, initFormSecurity } from "./components/forms.js";
 
-function initFrameworkRuntime() {
+function initTemplateRuntime() {
   initThemeToggle();
   initMobileNav();
   initHeaderOffset();
   mountPassionDecor();
   initActiveLinks();
-  initFormValidation();
-  initFormSecurity();
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initFrameworkRuntime, { once: true });
+  document.addEventListener("DOMContentLoaded", initTemplateRuntime, { once: true });
 } else {
-  initFrameworkRuntime();
+  initTemplateRuntime();
 }

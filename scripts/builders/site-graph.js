@@ -1,4 +1,5 @@
 import path from "node:path";
+import { resolveOutputBasename } from "../shared/page-output.js";
 
 function normalizeDir(dir) {
   return String(dir || "").replace(/\\/g, "/").replace(/\/+$/, "");
@@ -35,9 +36,10 @@ export function outputPathFor(page, contentDir = "content") {
     return "index.html";
   }
 
+  const basename = resolveOutputBasename(page);
   return path.join(
     relDir,
-    page.name.replace(".json", ".html")
+    `${basename}.html`
   );
 }
 

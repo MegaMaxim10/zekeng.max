@@ -11,6 +11,10 @@ Each template folder must include a `template-config.json` file that declares:
 - `styles`: relative css files
 - `scripts`: relative js files (string or `{ "src": "...", "module": true }`)
 
+Note:
+- core component runtime scripts are injected by the build from `scripts/core/runtime/`
+- template manifest scripts should remain template-specific
+
 Global selection is in `portfolio-config.json`:
 
 ```json

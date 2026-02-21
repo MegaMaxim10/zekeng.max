@@ -1,4 +1,5 @@
 import { escapeHtml, renderStyles } from "../utils/render-utils.js";
+import { renderInlineText } from "../utils/inline-text.js";
 
 export function renderForm(block) {
   const provider = String(block.data.provider || "").toLowerCase();
@@ -14,8 +15,8 @@ export function renderForm(block) {
   const captchaMarkup = provider === "formspree"
     ? `
       <fieldset class="captcha-fieldset" data-simple-captcha>
-        <legend>Human Verification</legend>
-        <p class="captcha-hint">Solve this quick challenge to continue.</p>
+        <legend>${renderInlineText("Human Verification", { convertLineBreaks: false })}</legend>
+        <p class="captcha-hint">${renderInlineText("Solve this quick challenge to continue.", { convertLineBreaks: false })}</p>
         <label>
           <span class="captcha-question">Loading challenge...</span>
           <input type="text" class="captcha-input" inputmode="numeric" required />
@@ -33,7 +34,7 @@ export function renderForm(block) {
       ${providerHiddenFields}
       ${fields}
       ${captchaMarkup}
-      <button type="submit">Send</button>
+      <button type="submit">${renderInlineText("Send", { convertLineBreaks: false })}</button>
     </form>
   `;
 }
@@ -60,12 +61,12 @@ function renderFormField(field, index) {
   return `
     <div class="form-field">
       <label for="${fieldId}" class="form-label">
-        <span class="form-label-text">${escapeHtml(field.label)}</span>
+        <span class="form-label-text">${renderInlineText(field.label, { convertLineBreaks: false, parseLinks: false })}</span>
         ${requiredMark}
         ${requiredScreenReaderText}
       </label>
       ${controlMarkup}
-      ${field.helpText ? `<p id="${fieldId}-help" class="form-help">${escapeHtml(field.helpText)}</p>` : ""}
+      ${field.helpText ? `<p id="${fieldId}-help" class="form-help">${renderInlineText(field.helpText, { parseLinks: false })}</p>` : ""}
       <p id="${fieldId}-error" class="form-error" aria-live="polite" hidden></p>
     </div>
   `;

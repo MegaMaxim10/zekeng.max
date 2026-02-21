@@ -8,20 +8,29 @@
   },
   "header": {
     "title": "News",
-    "lead": "Announcements, milestones, and recent updates."
+    "lead": "Announcements, milestones, and recent updates across my academic and professional activities."
   },
   "body": [
     {
-      "type": "heading",
+      "type": "paragraph",
       "data": {
-        "level": 2,
-        "text": "News"
+        "text": "This page provides short updates from my portfolio. Each card links to a full note."
       }
     },
     {
-      "type": "paragraph",
+      "type": "content-collection",
       "data": {
-        "text": "This page is currently under construction. More content will be available soon."
+        "title": "Published Updates",
+        "source": "1-news",
+        "includeRootFiles": false,
+        "exclude": ["news.json"],
+        "publishedOnly": true,
+        "maxColumns": 3,
+        "enableSort": true,
+        "enableFilter": true,
+        "defaultSort": "date-desc",
+        "excerptLength": 180,
+        "emptyMessage": "No published news is available yet."
       }
     }
   ]

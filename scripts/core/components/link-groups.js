@@ -1,4 +1,6 @@
 import { escapeHtml, renderStyles } from "../utils/render-utils.js";
+import { resolveHref } from "../utils/url-utils.js";
+import { renderInlineText } from "../utils/inline-text.js";
 
 export function renderLinkGroups(block) {
   const data = block.data || {};
@@ -8,7 +10,7 @@ export function renderLinkGroups(block) {
   const groups = (data.groups || []).map((group) => {
     const links = (group.links || []).map((link) => {
       const external = link.external !== false;
-      const href = escapeHtml(resolveLinkHref(link.url || "#", external));
+      const href = escapeHtml(resolveHref(link.url || "#", { external, defaultHref: "#" }));
       const targetAttrs = external ? ` target="_blank" rel="noopener noreferrer"` : "";
       const icon = renderLinkIcon(link.icon || inferIconKey(link.url || ""));
 
@@ -16,7 +18,7 @@ export function renderLinkGroups(block) {
         <li class="link-groups-item">
           <a class="link-groups-link" href="${href}"${targetAttrs}>
             ${icon}
-            <span class="link-groups-label">${escapeHtml(link.label || link.url || "")}</span>
+            <span class="link-groups-label">${renderInlineText(link.label || link.url || "", { convertLineBreaks: false, parseLinks: false })}</span>
           </a>
         </li>
       `;
@@ -24,7 +26,7 @@ export function renderLinkGroups(block) {
 
     return `
       <article class="link-group">
-        ${group.title ? `<h3>${escapeHtml(group.title)}</h3>` : ""}
+        ${group.title ? `<h3>${renderInlineText(group.title, { convertLineBreaks: false })}</h3>` : ""}
         <ul class="link-groups-list">
           ${links}
         </ul>
@@ -34,7 +36,7 @@ export function renderLinkGroups(block) {
 
   return `
     <section class="${classes}" style="--link-group-columns: ${columns};">
-      ${data.title ? `<h2>${escapeHtml(data.title)}</h2>` : ""}
+      ${data.title ? `<h2>${renderInlineText(data.title, { convertLineBreaks: false })}</h2>` : ""}
       <div class="link-groups-grid">
         ${groups}
       </div>
@@ -74,24 +76,4 @@ function renderLinkIcon(iconKey) {
   };
 
   return `<span class="link-groups-icon">${icons[key] || icons.link}</span>`;
-}
-
-function resolveLinkHref(url, external) {
-  const text = String(url || "").trim();
-  if (!text) {
-    return "#";
-  }
-
-  if (!external && isRelativeUrl(text)) {
-    return `{{basePath}}/${text.replace(/^\/+/, "")}`;
-  }
-
-  return text;
-}
-
-function isRelativeUrl(url) {
-  return !url.startsWith("{{")
-    && !/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(url)
-    && !url.startsWith("//")
-    && !url.startsWith("#");
 }

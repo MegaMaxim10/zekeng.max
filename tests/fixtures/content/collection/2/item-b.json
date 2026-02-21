@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "id": "item-b",
+    "title": "Item B",
+    "description": "Draft item summary",
+    "language": "en",
+    "status": "draft",
+    "publishedTime": "2026-02-18T12:00:00Z",
+    "tags": ["beta"]
+  },
+  "body": [
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Draft item body."
+      }
+    }
+  ]
+}
+

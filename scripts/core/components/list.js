@@ -1,14 +1,15 @@
-import { escapeHtml, renderStyles } from "../utils/render-utils.js";
+import { renderStyles } from "../utils/render-utils.js";
+import { renderInlineText } from "../utils/inline-text.js";
 
 export function renderList(block) {
+  const data = block.data || {};
   const classes = ["block-list", renderStyles(block)].filter(Boolean).join(" ");
-  const items = block.data.items
-    .map(item => `<li>${escapeHtml(item)}</li>`)
-    .join("");
+  const tag = data.ordered ? "ol" : "ul";
+  const items = (data.items || []).map((item) => `<li>${renderInlineText(item)}</li>`).join("");
 
   return `
-    <ul class="${classes}">
+    <${tag} class="${classes}">
       ${items}
-    </ul>
+    </${tag}>
   `;
 }

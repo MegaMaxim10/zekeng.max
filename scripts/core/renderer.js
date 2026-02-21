@@ -14,6 +14,13 @@ import { renderMap } from "./components/map.js";
 import { renderLinkGroups } from "./components/link-groups.js";
 import { renderLayoutRow } from "./components/layout-row.js";
 import { renderFeatureImage } from "./components/feature-image.js";
+import { renderMediaImage } from "./components/media-image.js";
+import { renderImageGallery } from "./components/image-gallery.js";
+import { renderEmbed } from "./components/embed.js";
+import { renderCodeBlock } from "./components/code-block.js";
+import { renderTable } from "./components/table.js";
+import { renderContentCollection } from "./components/content-collection.js";
+import { renderContentCarousel } from "./components/content-carousel.js";
 
 export function renderPage(page) {
     let html = "";
@@ -68,6 +75,20 @@ function renderBlock(block) {
     case "feature-image":
     case "profile-image":
       return renderFeatureImage(block);
+    case "media-image":
+      return renderMediaImage(block);
+    case "image-gallery":
+      return renderImageGallery(block);
+    case "embed":
+      return renderEmbed(block);
+    case "code-block":
+      return renderCodeBlock(block);
+    case "table":
+      return renderTable(block);
+    case "content-collection":
+      return renderContentCollection(block);
+    case "content-carousel":
+      return renderContentCarousel(block);
     default:
       throw new Error(`Unsupported block type: ${block.type}`);
   }

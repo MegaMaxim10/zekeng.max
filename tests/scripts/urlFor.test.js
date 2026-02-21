@@ -20,6 +20,25 @@ describe("urlFor()", () => {
     expect(urlFor(teaching, graph, "/my-site"))
       .toBe("/my-site/teaching/index.html");
   });
+
+  it("uses title slug when meta.slugFromTitle is enabled", () => {
+    const newsPage = {
+      file: "content/news/post-1.json",
+      dir: "content/news",
+      name: "post-1.json",
+      json: {
+        meta: {
+          id: "news-post-1",
+          title: "Seminar at Colibri-CRIC, Dschang (17 Feb 2026)",
+          language: "en",
+          slugFromTitle: true
+        }
+      }
+    };
+    const slugGraph = buildSiteGraph([...pages, newsPage]);
+
+    expect(urlFor(newsPage, slugGraph)).toBe("/news/seminar-at-colibri-cric-dschang-17-feb-2026.html");
+  });
 });
 
 

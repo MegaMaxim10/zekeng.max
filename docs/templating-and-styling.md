@@ -26,10 +26,11 @@ In `scripts/builders/build.js`, for each page:
 1. Resolve template name from `presentation.template` or `templates.default`.
 2. Load `templates/<templateName>/template-config.json`.
 3. Resolve html from `template-config.json -> html`.
-4. Resolve template styles/scripts from the same manifest.
-5. Merge global custom assets from `portfolio-config.json -> custom`.
-6. Merge page-level `presentation.extraStyles` and `presentation.extraScripts`.
-7. Inject placeholders into the selected template html.
+4. Add built-in core runtime script (`assets/core/js/runtime.js`).
+5. Resolve template styles/scripts from the same manifest.
+6. Merge global custom assets from `portfolio-config.json -> custom`.
+7. Merge page-level `presentation.extraStyles` and `presentation.extraScripts`.
+8. Inject placeholders into the selected template html.
 
 Template placeholders expected by the default contract:
 - `{{title}}`
@@ -88,6 +89,7 @@ Example `templates/default/template-config.json`:
 ```
 
 Paths are relative to the template folder.
+Core runtime scripts do not need to be declared in template manifests; they are injected globally by the build.
 
 ## 5. Per-Page Presentation
 

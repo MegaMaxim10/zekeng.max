@@ -1,4 +1,5 @@
 import { escapeHtml, renderStyles } from "../utils/render-utils.js";
+import { normalizeAssetSrc } from "../utils/url-utils.js";
 
 const SUPPORTED_SHAPES = new Set(["square", "rounded", "circle", "octagon", "hexagon", "diamond"]);
 const SUPPORTED_EFFECTS = new Set([
@@ -18,7 +19,7 @@ export function renderFeatureImage(block) {
     throw new Error("feature-image requires data.src");
   }
 
-  const src = normalizeSrc(rawSrc);
+  const src = normalizeAssetSrc(rawSrc);
   const alt = escapeHtml(data.alt || "Feature image");
   const shape = normalizeShape(data.shape);
   const effect = normalizeEffect(data.loadEffect);
@@ -76,15 +77,6 @@ function normalizeEffect(value) {
     return key;
   }
   return "none";
-}
-
-function normalizeSrc(src) {
-  if (/^(https?:\/\/|data:)/i.test(src) || src.startsWith("{{")) {
-    return src;
-  }
-
-  const normalized = src.replace(/^\/+/, "").replace(/^src\//, "");
-  return `{{basePath}}/${normalized}`;
 }
 
 function buildZoomId(block, src) {

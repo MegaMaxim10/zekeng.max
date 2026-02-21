@@ -21,18 +21,22 @@ Each block follows:
 
 ## `paragraph`
 
-Purpose: plain text paragraph (HTML escaped).
+Purpose: paragraph text with safe inline link support.
 
 ```json
 {
   "type": "paragraph",
-  "data": { "text": "Short biography text." }
+  "data": { "text": "Read [latest news](1-news/news.html)." }
 }
 ```
 
+Notes:
+- Markdown-style links are supported with `[label](url)`.
+- Relative links are auto-prefixed with `{{basePath}}/`.
+
 ## `heading`
 
-Purpose: semantic heading in content area.
+Purpose: semantic heading in content area (supports inline rich text formatting).
 
 ```json
 {
@@ -43,16 +47,32 @@ Purpose: semantic heading in content area.
 
 ## `list`
 
-Purpose: bullet list.
+Purpose: bullet or ordered list.
 
 ```json
 {
   "type": "list",
   "data": {
+    "ordered": false,
     "items": ["Software Engineering", "Workflows", "Formal Methods"]
   }
 }
 ```
+
+## Inline Text Formatting
+
+The following inline formats are supported in text fields used by `paragraph`, `heading`, list items, and table cells:
+
+- Links: `[label](url)`
+- Bold: `[b]text[/b]` or `**text**`
+- Italic: `[i]text[/i]` or `*text*`
+- Underline: `[u]text[/u]` or `__text__`
+- Strike: `[s]text[/s]` or `~~text~~`
+- Code: `[code]text[/code]` or `` `text` ``
+- Highlight: `[mark]text[/mark]`
+- Color: `[color=#0d6adf]text[/color]`
+- Font family: `[font=heading]text[/font]`, `[font=sans]`, `[font=serif]`, `[font=mono]`
+- Font size: `[size=1.1rem]text[/size]` (supports `px`, `rem`, `em`, `%`)
 
 ## `timeline`
 
@@ -227,6 +247,139 @@ Supported `loadEffect` values:
 - `fade-in`
 - `blink`
 
+## `media-image`
+
+Purpose: single image with optional legend/caption and click-to-zoom lightbox behavior.
+
+```json
+{
+  "type": "media-image",
+  "data": {
+    "src": "src/assets/images/activities/event.jpg",
+    "alt": "Event photo",
+    "legend": "Opening session",
+    "zoom": true
+  }
+}
+```
+
+## `image-gallery`
+
+Purpose: multi-image gallery with layout variants and lightbox carousel.
+
+```json
+{
+  "type": "image-gallery",
+  "data": {
+    "layout": "photomontage",
+    "zoom": true,
+    "carousel": true,
+    "images": [
+      { "src": "src/assets/images/a.jpg", "caption": "Photo A" },
+      { "src": "src/assets/images/b.jpg", "caption": "Photo B" }
+    ]
+  }
+}
+```
+
+Supported `layout` values:
+- `masonry`
+- `photo`
+- `justified`
+- `moodboard`
+- `photomontage`
+
+## `embed`
+
+Purpose: embed external content (iframe) or local/external videos.
+
+```json
+{
+  "type": "embed",
+  "data": {
+    "kind": "iframe",
+    "src": "https://example.org/embed/resource",
+    "title": "Embedded resource",
+    "ratio": "16 / 9"
+  }
+}
+```
+
+## `code-block`
+
+Purpose: render formatted code snippets with optional line numbers.
+
+```json
+{
+  "type": "code-block",
+  "data": {
+    "language": "js",
+    "lineNumbers": true,
+    "code": "console.log('hello');"
+  }
+}
+```
+
+## `table`
+
+Purpose: render tabular data with optional caption and headers.
+
+```json
+{
+  "type": "table",
+  "data": {
+    "caption": "Quick facts",
+    "headers": ["Item", "Value"],
+    "rows": [
+      ["Date", "2026-02-17"],
+      ["Location", "Dschang"]
+    ]
+  }
+}
+```
+
+## `content-collection`
+
+Purpose: generic folder-based listing component (news, events, publications, etc.) rendered as cards with sort/filter controls.
+
+```json
+{
+  "type": "content-collection",
+  "data": {
+    "source": "1-news",
+    "includeRootFiles": false,
+    "exclude": ["news.json"],
+    "publishedOnly": true,
+    "maxColumns": 3,
+    "enableSort": true,
+    "enableFilter": true
+  }
+}
+```
+
+Notes:
+- Tag filters are shown in a dropdown panel to stay compact with large tag sets.
+- Sorting/filtering is applied on already rendered HTML (client-side).
+
+## `content-carousel`
+
+Purpose: fixed-size, ordered folder listing in a horizontal carousel with previous/next controls and optional “view more” link.
+
+```json
+{
+  "type": "content-carousel",
+  "data": {
+    "source": "1-news",
+    "exclude": ["news.json"],
+    "publishedOnly": true,
+    "defaultSort": "date-desc",
+    "limit": 10,
+    "viewMoreUrl": "{{hook:url.resolve(1-news/news.html)}}",
+    "viewMoreLabel": "View all news"
+  }
+}
+```
+
 ## `map`
 
 Purpose: embeddable location map with metadata.
@@ -357,4 +510,5 @@ Purpose: pull and render ORCID profile sections.
 1. Use `style` to apply page-specific custom classes without editing framework CSS.
 2. Use `cfg`/`hook` tokens to avoid duplicating contact/profile data in multiple pages.
 3. Validate content with `npm run validate:content` after block edits.
+4. To generate SEO-friendly page filenames from titles, set `"meta": { "slugFromTitle": true }` on that page.
 

@@ -30,4 +30,18 @@ describe("renderLink", () => {
     expect(html).toContain('href="{{basePath}}/6-contact/contact.html"');
     expect(html).not.toContain("{{basePath}}/{{basePath}}/");
   });
+
+  it("renders inline formatting in link label", () => {
+    const block = {
+      type: "link",
+      data: {
+        label: "[b]Contact[/b] page",
+        url: "6-contact/contact.html",
+        external: false
+      }
+    };
+
+    const html = renderLink(block);
+    expect(html).toContain("<strong>Contact</strong>");
+  });
 });

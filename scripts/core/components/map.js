@@ -1,4 +1,5 @@
 import { escapeHtml, renderStyles } from "../utils/render-utils.js";
+import { renderInlineText } from "../utils/inline-text.js";
 
 export function renderMap(block) {
   const data = block.data || {};
@@ -9,7 +10,7 @@ export function renderMap(block) {
   const mapUrls = resolveMapUrls(data, provider);
 
   const linkHtml = mapUrls.linkUrl
-    ? `<a class="map-open-link" href="${escapeHtml(mapUrls.linkUrl)}" target="_blank" rel="noopener noreferrer">Open map</a>`
+    ? `<a class="map-open-link" href="${escapeHtml(mapUrls.linkUrl)}" target="_blank" rel="noopener noreferrer">${renderInlineText("Open map", { convertLineBreaks: false })}</a>`
     : "";
   const coordinates = hasCoordinates(data)
     ? `<p class="map-coordinates">Coordinates: ${escapeHtml(`${data.latitude}, ${data.longitude}`)}</p>`
@@ -31,7 +32,7 @@ export function renderMap(block) {
     <section class="${classes}" aria-label="${escapeHtml(title)}">
       ${frameHtml}
       <div class="map-meta">
-        ${data.address ? `<p class="map-address">${escapeHtml(data.address)}</p>` : ""}
+        ${data.address ? `<p class="map-address">${renderInlineText(data.address)}</p>` : ""}
         ${coordinates}
         ${linkHtml}
       </div>

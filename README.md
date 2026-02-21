@@ -136,13 +136,18 @@ Resolution happens before validation and rendering, so referenced values behave 
 
 ## Framework Runtime vs Custom Runtime
 
-Framework runtime entry (template-owned):
+Framework core runtime entry:
+- `scripts/core/runtime/runtime.js`
+
+Template runtime entry (template-owned):
 - `templates/default/assets/js/runtime.js`
 
 Developer runtime entry:
 - `src/js/custom.js`
 
-By default, both are loaded. Framework code handles reusable behavior (theme/nav/form/dialog/etc).  
+By default, core runtime, template runtime, and developer runtime are loaded.  
+Core runtime handles component-level reusable behavior (content collections/carousels/lightbox, form validation/security).  
+Template runtime handles template-specific behavior (theme/nav/layout).  
 Developer code should only contain project-specific behavior.
 
 ## Form System Highlights

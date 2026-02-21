@@ -588,8 +588,35 @@
     font-size: var(--fs-0, 0.95rem);
 }
 
+/* Layout Row Super Component */
+.layout-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    align-items: stretch;
+    margin: 1rem 0;
+}
+
+.layout-row-item {
+    min-width: 0;
+}
+
+.layout-row-item > * {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 /* Responsive adjustments for ORCID components */
 @media (max-width: 768px) {
+    .layout-row {
+        flex-wrap: wrap;
+    }
+
+    .layout-row-item {
+        flex-basis: 100% !important;
+        max-width: 100% !important;
+    }
+
     .work-metadata {
         width: 100%;
     }

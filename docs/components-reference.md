@@ -206,6 +206,35 @@ Purpose: embeddable location map with metadata.
 `embedUrl` and `linkUrl` are optional overrides.  
 If omitted, they are derived from `provider` + `latitude` + `longitude`.
 
+## `layout-row`
+
+Purpose: render 1 to 6 components on the same row with optional width ratios.
+
+```json
+{
+  "type": "layout-row",
+  "data": {
+    "components": [
+      {
+        "type": "paragraph",
+        "data": { "text": "Left column" }
+      },
+      {
+        "type": "list",
+        "data": { "items": ["Item A", "Item B"] }
+      }
+    ],
+    "widths": [75, 25]
+  }
+}
+```
+
+Notes:
+- `components`: array of child blocks (`min: 1`, `max: 6`).
+- `widths` is optional.
+- default widths are equal (`2 -> 50/50`, `3 -> 33.33/33.33/33.33`, etc).
+- widths accept numbers or percentage strings and are normalized to 100 (`[3,1]` becomes `75/25`).
+
 ## `link-groups`
 
 Purpose: categorized multi-column links with optional icons.

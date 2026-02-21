@@ -406,6 +406,57 @@
         }
       ]
     },
+    "rowItemBlock": {
+      "oneOf": [
+        { "$ref": "#/$defs/paragraphBlock" },
+        { "$ref": "#/$defs/headingBlock" },
+        { "$ref": "#/$defs/listBlock" },
+        { "$ref": "#/$defs/timelineBlock" },
+        { "$ref": "#/$defs/linkBlock" },
+        { "$ref": "#/$defs/cardGridBlock" },
+        { "$ref": "#/$defs/assetBlock" },
+        { "$ref": "#/$defs/formBlock" },
+        { "$ref": "#/$defs/htmlContentBlock" },
+        { "$ref": "#/$defs/mapBlock" },
+        { "$ref": "#/$defs/linkGroupsBlock" },
+        { "$ref": "#/$defs/orcidBlock" }
+      ]
+    },
+    "layoutRowBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/blockBase" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "layout-row" },
+            "data": {
+              "type": "object",
+              "required": ["components"],
+              "properties": {
+                "components": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "items": { "$ref": "#/$defs/rowItemBlock" }
+                },
+                "widths": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "items": {
+                    "oneOf": [
+                      { "type": "number", "exclusiveMinimum": 0 },
+                      { "type": "string", "pattern": "^\\s*\\d+(\\.\\d+)?\\s*%?\\s*$" }
+                    ]
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
     "linkGroupsBlock": {
       "allOf": [
         { "$ref": "#/$defs/blockBase" },
@@ -561,6 +612,7 @@
         { "$ref": "#/$defs/formBlock" },
         { "$ref": "#/$defs/htmlContentBlock" },
         { "$ref": "#/$defs/mapBlock" },
+        { "$ref": "#/$defs/layoutRowBlock" },
         { "$ref": "#/$defs/linkGroupsBlock" },
         { "$ref": "#/$defs/orcidBlock" }
       ]

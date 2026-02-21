@@ -47,6 +47,7 @@ This file lists stable CSS hooks intended for customization.
 - `.block-html-content`
 - `.block-map`
 - `.block-link-groups`
+- `.block-layout-row`
 
 ## Form System
 
@@ -85,6 +86,8 @@ This file lists stable CSS hooks intended for customization.
 - `.link-groups-list`
 - `.link-groups-link`
 - `.link-groups-icon`
+- `.layout-row`
+- `.layout-row-item`
 
 ## Extension Rule
 

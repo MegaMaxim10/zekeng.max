@@ -39,6 +39,10 @@ async function preprocessBlock(block) {
   if (processor && typeof processor === "function") {
     await processor(block);
   }
+
+  for (const child of nestedBlocks(block)) {
+    await preprocessBlock(child);
+  }
 }
 
 /**
@@ -55,4 +59,12 @@ async function preprocessPage(page) {
 }
 
 export { preprocessPage, preprocessBlock, blockProcessors };
+
+function nestedBlocks(block) {
+  if (block?.type === "layout-row") {
+    const components = block?.data?.components;
+    return Array.isArray(components) ? components : [];
+  }
+  return [];
+}
 

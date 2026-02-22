@@ -8,6 +8,11 @@
     "test:watch": "vitest",
     "validate:content": "node scripts/builders/validate-content.js",
     "build": "node scripts/builders/build.js",
+    "build:page": "node scripts/builders/build.js --page",
+    "serve": "node scripts/builders/serve.js",
+    "serve:page": "node scripts/builders/serve.js --page",
+    "preview": "npm run build && npm run serve",
+    "preview:page": "node scripts/builders/preview-page.js",
     "verify": "npm run validate-test-and-build",
     "validate-test-and-build": "npm run validate:content && npm run test && npm run build"
   },

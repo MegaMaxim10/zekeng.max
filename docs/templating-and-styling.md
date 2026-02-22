@@ -114,4 +114,21 @@ Inside any page JSON:
 2. Select global default in `portfolio-config.json`.
 3. Keep project customization in `src/css` and `src/js`.
 4. Use per-page `presentation` overrides only when needed.
-5. Run `npm run verify`.
+5. Use `npm run preview` for a full local preview, or `npm run preview:page -- <content-json-path>` for a focused page preview.
+6. Run `npm run verify`.
+
+## 7. Build And Preview Commands
+
+Common commands:
+- `npm run build` -> build full site into `public/`
+- `npm run serve` -> serve existing `public/` locally
+- `npm run preview` -> build full site then serve it
+
+Single-page workflow (useful while editing one page):
+- `npm run build:page -- src/content/1-news/1/1-post-1.json`
+- `npm run serve:page -- src/content/1-news/1/1-post-1.json`
+- `npm run preview:page -- src/content/1-news/1/1-post-1.json`
+
+Notes:
+- Single-page build still loads the full site graph for navigation/breadcrumb consistency.
+- Only the selected page HTML is generated in `public/` (plus required assets and runtime files).

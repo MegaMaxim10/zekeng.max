@@ -46,11 +46,26 @@ npm test
 # build site into public/
 npm run build
 
+# serve existing public/ output locally
+npm run serve
+
+# build and serve the full site locally (preview)
+npm run preview
+
+# build only one content page (still with assets and full navigation context)
+npm run build:page -- src/content/1-news/1/1-post-1.json
+
+# serve and open root redirected to one page (expects an existing build)
+npm run serve:page -- src/content/1-news/1/1-post-1.json
+
+# build and serve one page in one command
+npm run preview:page -- src/content/1-news/1/1-post-1.json
+
 # full verification pipeline
 npm run verify
 ```
 
-Open `public/index.html` after build.
+Open `public/index.html` after build, or use `npm run serve` / `npm run preview`.
 
 ## Build Pipeline
 
@@ -186,6 +201,24 @@ Run:
 
 ```bash
 npm test
+```
+
+Run one test file:
+
+```bash
+npm test -- tests/renderer/paragraph.test.js
+```
+
+Run one test by name (within one or many files):
+
+```bash
+npm test -- -t "renders inline formatting"
+```
+
+Run one named test inside one file:
+
+```bash
+npm test -- tests/renderer/paragraph.test.js -t "renders inline formatting"
 ```
 
 ## License

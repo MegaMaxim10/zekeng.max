@@ -34,6 +34,7 @@ const CORE_RUNTIME_SOURCE_DIR = path.join("scripts", "core", "runtime");
 const CORE_RUNTIME_OUTPUT_DIR = path.join(OUTPUT_DIR, "assets", "core", "js");
 const CORE_RUNTIME_SCRIPTS = [{ src: "assets/core/js/runtime.js", module: true }];
 const BASE_PATH = process.env.BASE_PATH || "";
+const buildCliOptions = parseBuildCliOptions(process.argv.slice(2));
 
 const portfolioConfig = readPortfolioConfig();
 const siteData = portfolioConfig.site || {};
@@ -43,6 +44,52 @@ const templateCache = new Map();
 const templateManifestCache = new Map();
 const usedTemplateNames = new Set();
 const referencedPublicAssetPaths = new Set();
+
+function parseBuildCliOptions(args) {
+  const options = { page: "" };
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = String(args[index] || "");
+    if (arg === "--page") {
+      const next = String(args[index + 1] || "").trim();
+      if (!next || next.startsWith("--")) {
+        throw new Error('Missing value for "--page". Example: npm run build:page -- src/content/1-news/1/1-post-1.json');
+      }
+      options.page = next;
+      index += 1;
+      continue;
+    }
+    if (arg === "--help" || arg === "-h") {
+      console.log([
+        "Usage:",
+        "  node scripts/builders/build.js",
+        "  node scripts/builders/build.js --page <content-json-path>"
+      ].join("\n"));
+      process.exit(0);
+    }
+    throw new Error(`Unknown build option: ${arg}`);
+  }
+  return options;
+}
+
+function normalizeFileSystemPath(filePath) {
+  return path.resolve(String(filePath || "")).replace(/\\/g, "/").toLowerCase();
+}
+
+function selectPagesToRender(pages, pageArg) {
+  if (!pageArg) return pages;
+
+  const normalizedRequested = normalizeFileSystemPath(pageArg);
+  const match = pages.find((page) => normalizeFileSystemPath(page.file) === normalizedRequested);
+
+  if (!match) {
+    throw new Error(
+      `Single-page build target not found: ${pageArg}\nExpected a content JSON path such as "src/content/1-news/1/1-post-1.json".`
+    );
+  }
+
+  console.log(`Single-page build mode enabled for ${match.file}`);
+  return [match];
+}
 
 function cleanDirectoryContents(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -537,12 +584,16 @@ function loadAllPages() {
 
 const pages = loadAllPages();
 console.log(`Loaded ${pages.length} content pages`);
+const pagesToRender = selectPagesToRender(pages, buildCliOptions.page);
+if (pagesToRender.length !== pages.length) {
+  console.log(`Rendering ${pagesToRender.length} page (single-page mode)`);
+}
 
 const siteGraph = buildSiteGraph(pages, CONTENT_DIR);
 const navigationHtml = generateNavigation(siteGraph, BASE_PATH);
 const lastModified = new Date().toISOString().split("T")[0];
 
-for (const page of pages) {
+for (const page of pagesToRender) {
   await preprocessPage(page);
 
   const renderedContent = renderPage(page.json);
